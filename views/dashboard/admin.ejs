@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<%- include('../partials/head', { 
+    pageTitle: 'Painel Admin - Coliseu Pokémon',
+    pageDescription: 'Painel de administração do Coliseu Pokémon',
+    pageKeywords: 'Admin, Master, Coliseu Pokémon'
+}) %>
+
+<body>
+
+    <!-- Cabeçalho do Dashboard -->
+    <%- include('../partials/header-dashboard', { user: user }) %>
+
+    <div class="d-flex">
+
+        <!-- Barra Lateral (Sidebar) simulando abas -->
+        <nav id="sidebar">
+            <ul class="nav flex-column">
+                <!-- Clique em cada link para exibir a seção correspondente -->
+                <li class="nav-item">
+                    <a class="nav-link active" href="#" data-target="tab-dashboard">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-target="tab-users">Gerenciar Usuários</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-target="tab-posts">Gerenciar Postagens</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-target="tab-settings">Configurações</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Conteúdo Principal -->
+        <div class="main-content container-fluid">
+
+            <!-- Seção Dashboard -->
+            <div id="tab-dashboard" class="tab-section" style="display: block;">
+                <h1 class="mb-4">Bem-vindo, <%= user.name %>!</h1>
+
+                <!-- Ações Rápidas -->
+                <div class="row">
+                    <div class="col-md-3 mb-4">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="bi bi-people" style="font-size: 3rem;"></i>
+                                <h5 class="card-title mt-3">Usuários</h5>
+                                <p class="card-text">Gerencie e aprove novos usuários do sistema.</p>
+                                <button class="btn btn-primary" data-target="tab-users" onclick="showTab(event)">Ver Usuários</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 mb-4">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="bi bi-file-earmark-text" style="font-size: 3rem;"></i>
+                                <h5 class="card-title mt-3">Postagens</h5>
+                                <p class="card-text">Acesse as postagens e gerencie conteúdos do blog.</p>
+                                <button class="btn btn-primary" data-target="tab-posts" onclick="showTab(event)">Ver Postagens</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 mb-4">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="bi bi-gear" style="font-size: 3rem;"></i>
+                                <h5 class="card-title mt-3">Configurações</h5>
+                                <p class="card-text">Ajuste as configurações do site.</p>
+                                <button class="btn btn-primary" data-target="tab-settings" onclick="showTab(event)">Ir para Configurações</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 mb-4">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="bi bi-box-arrow-left" style="font-size: 3rem;"></i>
+                                <h5 class="card-title mt-3">Sair</h5>
+                                <p class="card-text">Encerrar a sessão de administração.</p>
+                                <a href="/logout" class="btn btn-danger">Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-5">
+
+                <!-- Tabela de Atividades Recentes -->
+                <h2>Atividades Recentes</h2>
+                <div class="table-responsive">
+                    <table class="table table-bordered align-middle">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Usuário</th>
+                                <th>Ação</th>
+                                <th>Detalhes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>30/01/2025</td>
+                                <td>Ash</td>
+                                <td>Postagem Criada</td>
+                                <td>Artigo sobre batalhas Pokémon</td>
+                            </tr>
+                            <tr>
+                                <td>29/01/2025</td>
+                                <td>Misty</td>
+                                <td>Comentário</td>
+                                <td>Comentou em "Explorando Johto"</td>
+                            </tr>
+                            <tr>
+                                <td>28/01/2025</td>
+                                <td>Brock</td>
+                                <td>Usuário Aprovado</td>
+                                <td>Aprovou Danilo como Escritor</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /Seção Dashboard -->
+
+            <!-- Seção Gerenciar Usuários -->
+            <div id="tab-users" class="tab-section" style="display: none;">
+                <h2>Gerenciar Usuários</h2>
+                <p>Aqui você pode aprovar, revogar e atribuir funções aos usuários.</p>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered align-middle">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Funções</th>
+                                <th>Aprovado?</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% users.forEach(function(u) { 
+                                const rolesArray = u.roles ? u.roles.split(",") : []; 
+                            %>
+                            <tr>
+                                <td><%= u.id %></td>
+                                <td><%= u.name %></td>
+                                <td><%= u.email %></td>
+                                <td>
+                                    <!-- Exemplo de multi-select para roles -->
+                                    <form action="/dashboard/admin/update-roles" method="POST" class="d-inline">
+                                        <input type="hidden" name="userId" value="<%= u.id %>">
+                                        <select name="roles[]" multiple class="form-select form-select-sm" style="min-width:120px;">
+                                            <option value="Master" <%= rolesArray.includes("Master") ? "selected" : "" %> >Master</option>
+                                            <option value="Admin" <%= rolesArray.includes("Admin") ? "selected" : "" %> >Admin</option>
+                                            <option value="Moderador" <%= rolesArray.includes("Moderador") ? "selected" : "" %> >Moderador</option>
+                                            <option value="Escritor" <%= rolesArray.includes("Escritor") ? "selected" : "" %> >Escritor</option>
+                                            <option value="Revisor" <%= rolesArray.includes("Revisor") ? "selected" : "" %> >Revisor</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-sm btn-secondary mt-1">Salvar</button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <%= u.approved ? 'Sim' : 'Não' %>
+                                </td>
+                                <td>
+                                    <!-- Botão Aprovar/Revogar -->
+                                    <form action="/dashboard/admin/toggle-approve" method="POST" class="d-inline">
+                                        <input type="hidden" name="userId" value="<%= u.id %>">
+                                        <button type="submit" class="btn btn-sm <%= u.approved ? 'btn-warning' : 'btn-success' %>">
+                                            <%= u.approved ? 'Revogar' : 'Aprovar' %>
+                                        </button>
+                                    </form>
+
+                                    <!-- Botão Excluir -->
+                                    <form action="/dashboard/admin/delete-user" method="POST" class="d-inline">
+                                        <input type="hidden" name="userId" value="<%= u.id %>">
+                                        <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /Seção Gerenciar Usuários -->
+
+            <!-- Seção Gerenciar Postagens -->
+            <div id="tab-posts" class="tab-section" style="display: none;">
+                <h2>Gerenciar Postagens</h2>
+                <p>Aqui você poderá visualizar, editar, aprovar ou remover postagens do blog.</p>
+                <!-- Conteúdo futuro de gerenciamento de postagens -->
+            </div>
+            <!-- /Seção Gerenciar Postagens -->
+
+            <!-- Seção Configurações -->
+            <div id="tab-settings" class="tab-section" style="display: none;">
+                <h2>Configurações</h2>
+                <p>Aqui você pode ajustar configurações gerais do site.</p>
+                <!-- Conteúdo futuro de configurações -->
+            </div>
+            <!-- /Seção Configurações -->
+
+        </div>
+    </div>
+
+    <%- include('../partials/footer') %>
+
+    <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script>
+        // Função para alternar entre as abas (seções) via clique no sidebar
+        const sidebarLinks = document.querySelectorAll('#sidebar .nav-link');
+        const tabSections = document.querySelectorAll('.tab-section');
+
+        function showTab(event) {
+            event.preventDefault();
+            const targetId = event.target.getAttribute('data-target');
+
+            // Remove .active de todos os links
+            sidebarLinks.forEach(link => link.classList.remove('active'));
+
+            // Esconde todas as seções
+            tabSections.forEach(sec => sec.style.display = 'none');
+
+            // Mostra apenas a seção alvo
+            document.getElementById(targetId).style.display = 'block';
+
+            // Adiciona .active ao link clicado
+            event.target.classList.add('active');
+        }
+
+        // Adiciona o listener para cada link
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', showTab);
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,23 @@
+<!-- views/partials/header.ejs -->
+<header id="header" class="header d-flex align-items-center fixed-top">
+  <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+
+    <a href="/" class="logo d-flex align-items-center">
+      <img src="/img/logo.png" alt="">
+      <h1 class="sitename">Coliseu Pokémon</h1>
+    </a>
+
+    <nav id="navmenu" class="navmenu">
+      <ul>
+        <li><a href="/" class="<%= (activePage === 'home') ? 'active' : '' %>">Início</a></li>
+        <li><a href="/#about" class="<%= (activePage === 'about') ? 'active' : '' %>">Quem Somos</a></li>
+        <li><a href="/#services" class="<%= (activePage === 'services') ? 'active' : '' %>">Sorteios</a></li>
+        <li><a href="/#portfolio" class="<%= (activePage === 'portfolio') ? 'active' : '' %>">Torneios</a></li>
+        <li><a href="/blog" class="<%= (activePage === 'blog') ? 'active' : '' %>">Novidades</a></li>
+        <li><a href="/auth" class="<%= (activePage === 'auth') ? 'active' : '' %>">Parceiros/Escritores</a></li>
+      </ul>
+      <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+    </nav>
+
+  </div>
+</header>

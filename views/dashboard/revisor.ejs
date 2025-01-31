@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<%- include('../partials/head', { 
+    pageTitle: 'Painel Revisor - Coliseu Pokémon',
+    pageDescription: 'Painel de revisão do Coliseu Pokémon',
+    pageKeywords: 'Revisor, Coliseu Pokémon'
+}) %>
+
+<body>
+    <%- include('../partials/header-dashboard', { user: user }) %>
+
+    <div class="container mt-4">
+        <h1>Dashboard Revisor</h1>
+        <p>Bem-vindo, <%= user.name %>!</p>
+        <p>Suas roles: <%= user.roles.join(", ") %></p>
+        <hr>
+        <p>Em breve: área para revisar e aprovar postagens.</p>
+        <a href="/logout" class="btn btn-danger mt-3">Sair</a>
+    </div>
+
+    <%- include('../partials/footer') %>
+    <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+
+</html>

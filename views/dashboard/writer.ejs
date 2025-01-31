@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<%- include('../partials/head', {
+  pageTitle: 'Painel Escritor - Coliseu Pokémon',
+  pageDescription: 'Painel de escritores do Coliseu Pokémon',
+  pageKeywords: 'Escritor, Coliseu Pokémon'
+}) %>
+
+<body>
+  <%- include('../partials/header-dashboard', { user: user }) %>
+
+  <div class="d-flex">
+    <nav id="sidebar">
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link active" href="#" data-target="tab-writer-dashboard">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" data-target="tab-my-posts">Minhas Postagens</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" data-target="tab-create-post">Criar Nova Postagem</a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="main-content container-fluid">
+
+      <div id="tab-writer-dashboard" class="tab-section" style="display: block;">
+        <h1>Dashboard Escritor</h1>
+        <p class="mb-4">Bem-vindo, <%= user.name %>!</p>
+        <p>Suas roles: <%= user.roles.join(", ") %></p>
+        <hr class="my-4">
+        <div class="row">
+          <div class="col-md-4 mb-4">
+            <div class="card text-center">
+              <div class="card-body">
+                <i class="bi bi-file-earmark-text" style="font-size: 3rem;"></i>
+                <h5 class="card-title mt-3">Minhas Postagens</h5>
+                <p class="card-text">Visualize todas as postagens que você criou.</p>
+                <button class="btn btn-primary" data-target="tab-my-posts" onclick="showTab(event)">Ver Postagens</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 mb-4">
+            <div class="card text-center">
+              <div class="card-body">
+                <i class="bi bi-plus-square" style="font-size: 3rem;"></i>
+                <h5 class="card-title mt-3">Nova Postagem</h5>
+                <p class="card-text">Crie um novo artigo para revisão.</p>
+                <button class="btn btn-primary" data-target="tab-create-post" onclick="showTab(event)">Criar Agora</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 mb-4">
+            <div class="card text-center">
+              <div class="card-body">
+                <i class="bi bi-box-arrow-left" style="font-size: 3rem;"></i>
+                <h5 class="card-title mt-3">Sair</h5>
+                <p class="card-text">Encerrar a sessão de escritor.</p>
+                <a href="/logout" class="btn btn-danger">Logout</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-my-posts" class="tab-section" style="display: none;">
+        <h2 class="mb-4">Minhas Postagens</h2>
+        <div class="table-responsive">
+          <table class="table table-bordered align-middle">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Título</th>
+                <th>Status</th>
+                <th>Criado em</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% posts.forEach(post => { %>
+              <tr>
+                <td><%= post.id %></td>
+                <td><%= post.title %></td>
+                <td><%= post.status %></td>
+                <td><%= post.created_at %></td>
+                <td>
+                  <a href="#" class="btn btn-sm btn-primary disabled">Editar</a>
+                  <form action="/dashboard/writer/delete-post" method="POST" class="d-inline">
+                    <input type="hidden" name="postId" value="<%= post.id %>">
+                    <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
+                  </form>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="tab-create-post" class="tab-section" style="display: none;">
+        <h2 class="mb-4">Criar Nova Postagem</h2>
+
+        <script src="https://cdn.ckeditor.com/4.20.2/standard/ckeditor.js"></script>
+
+        <form action="/dashboard/writer/create-post" method="POST">
+          <div class="mb-3">
+            <label for="title" class="form-label">Título da Postagem</label>
+            <input type="text" id="title" name="title" class="form-control" placeholder="Insira o título" required>
+          </div>
+          <div class="mb-3">
+            <label for="featuredImage" class="form-label">Imagem de Capa (URL)</label>
+            <input type="text" id="featuredImage" name="featuredImage" class="form-control"
+                   placeholder="Ex: https://exemplo.com/imagem.png">
+          </div>
+          <div class="mb-3">
+            <label for="images" class="form-label">Galeria de Imagens (URLs separadas por vírgula)</label>
+            <input type="text" id="images" name="images" class="form-control"
+                   placeholder="Ex: https://exemplo.com/img1.jpg, https://exemplo.com/img2.jpg">
+          </div>
+          <div class="mb-3">
+            <label for="tags" class="form-label">Tags (separadas por vírgula)</label>
+            <input type="text" id="tags" name="tags" class="form-control"
+                   placeholder="Ex: curiosidades, dicas, evento">
+          </div>
+          <div class="mb-3">
+            <label for="franchiseType" class="form-label">Tipo de Conteúdo</label>
+            <select id="franchiseType" name="franchiseType" class="form-select">
+              <option value="">Selecione</option>
+              <option value="Jogo">Jogo</option>
+              <option value="Anime">Anime</option>
+              <option value="Filme">Filme</option>
+              <option value="Outros">Outros</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="franchiseDetail" class="form-label">Detalhes da Franquia (ex: Nome do jogo/temporada)</label>
+            <input type="text" id="franchiseDetail" name="franchiseDetail" class="form-control"
+                   placeholder="Ex: Pokémon Scarlet/Violet, Temporada 22 etc.">
+          </div>
+
+          <div class="mb-3">
+            <label for="content" class="form-label">Conteúdo</label>
+            <textarea id="content" name="content" rows="6"
+                      placeholder="Escreva o conteúdo da postagem..." required></textarea>
+          </div>
+
+          <div class="mb-3">
+            <button type="button" class="btn btn-secondary" onclick="previewPost()">Pré-visualizar</button>
+            <button type="submit" class="btn btn-success">Salvar Postagem</button>
+          </div>
+        </form>
+
+        <!-- PREVIEW COMO PÁGINA DE BLOG DETALHE -->
+        <div id="post-preview" class="mt-5" style="display: none;">
+          <h2>Pré-visualização</h2>
+          <div class="card p-3">
+            <main class="main">
+              <div class="page-title dark-background">
+                <div class="container position-relative">
+                  <h1 id="preview-title"></h1>
+                  <p>Pré-visualização do conteúdo do seu post antes de publicar.</p>
+                  <nav class="breadcrumbs">
+                    <ol>
+                      <li><a href="#">Início</a></li>
+                      <li class="current">Blog Detalhes</li>
+                    </ol>
+                  </nav>
+                </div>
+              </div><!-- End Page Title -->
+
+              <div class="container mt-4">
+                <div class="row">
+
+                  <div class="col-lg-8">
+
+                    <section id="blog-details" class="blog-details section">
+                      <div class="container">
+
+                        <article class="article">
+                          <div class="post-img">
+                            <div id="preview-featured-image" class="mb-3"></div>
+                          </div>
+
+                          <h2 class="title" id="blog-post-title"></h2>
+
+                          <div class="meta-top">
+                            <ul>
+                              <li class="d-flex align-items-center">
+                                <i class="bi bi-person"></i> <a>Você</a>
+                              </li>
+                              <li class="d-flex align-items-center">
+                                <i class="bi bi-clock"></i> <a><time datetime="2022-01-01">Agora</time></a>
+                              </li>
+                              <li class="d-flex align-items-center">
+                                <i class="bi bi-chat-dots"></i> <a>0 Comentários</a>
+                              </li>
+                            </ul>
+                          </div><!-- End meta top -->
+
+                          <div class="content">
+                            <div id="preview-content"></div>
+                          </div><!-- End post content -->
+
+                          <div class="meta-bottom d-flex align-items-center" style="justify-content: space-between;">
+                            <div>
+                              <i class="bi bi-folder"></i>
+                              <ul class="cats d-inline">
+                                <li id="preview-type-text"></li>
+                              </ul>
+                              <i class="bi bi-tags ms-3"></i>
+                              <ul class="tags d-inline">
+                                <li id="preview-tags-text"></li>
+                              </ul>
+                            </div>
+                            <small id="preview-detail-text" style="color:var(--accent-color); font-weight:600;"></small>
+                          </div><!-- End meta bottom -->
+
+                        </article>
+
+                        <div id="preview-images" class="mb-3 mt-3 d-flex flex-wrap"></div>
+
+                      </div>
+                    </section><!-- /Blog Details Section -->
+
+                  </div>
+
+                  <div class="col-lg-4 sidebar">
+                    <div class="widgets-container">
+                      <div class="blog-author-widget widget-item">
+                        <div class="d-flex flex-column align-items-center">
+                          <img src="https://via.placeholder.com/150" class="rounded-circle flex-shrink-0" alt="">
+                          <h4>Autor (Você)</h4>
+                          <div class="social-links">
+                            <a href="#"><i class="bi bi-twitter"></i></a>
+                            <a href="#"><i class="bi bi-facebook"></i></a>
+                            <a href="#"><i class="bi bi-instagram"></i></a>
+                          </div>
+                          <p style="text-align:center; font-style:italic;">
+                            Esta é apenas uma pré-visualização, as informações oficiais serão exibidas após a publicação.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div><!-- /sidebar -->
+
+                </div><!-- row -->
+              </div><!-- container -->
+            </main>
+          </div>
+        </div>
+        <!-- FIM PREVIEW -->
+
+      </div>
+    </div>
+  </div>
+
+  <%- include('../partials/footer') %>
+
+  <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/main.js"></script>
+  <script src="https://cdn.ckeditor.com/4.20.2/standard/ckeditor.js"></script>
+  <script>
+    CKEDITOR.replace('content');
+
+    const sidebarLinks = document.querySelectorAll('#sidebar .nav-link');
+    const tabSections = document.querySelectorAll('.tab-section');
+
+    function showTab(event) {
+      event.preventDefault();
+      const targetId = event.target.getAttribute('data-target');
+      sidebarLinks.forEach(link => link.classList.remove('active'));
+      tabSections.forEach(sec => sec.style.display = 'none');
+      document.getElementById(targetId).style.display = 'block';
+      event.target.classList.add('active');
+    }
+
+    sidebarLinks.forEach(link => {
+      link.addEventListener('click', showTab);
+    });
+
+    function previewPost() {
+      const titleVal = document.getElementById('title').value.trim();
+      const featuredImageVal = document.getElementById('featuredImage').value.trim();
+      const imagesVal = document.getElementById('images').value.trim();
+      const tagsVal = document.getElementById('tags').value.trim();
+      const typeVal = document.getElementById('franchiseType').value.trim();
+      const detailVal = document.getElementById('franchiseDetail').value.trim();
+      const contentVal = CKEDITOR.instances.content.getData();
+
+      document.getElementById('preview-title').textContent = titleVal || '(sem título)';
+      document.getElementById('blog-post-title').textContent = titleVal || '(sem título)';
+
+      document.getElementById('preview-featured-image').innerHTML = featuredImageVal
+        ? '<img src="' + featuredImageVal + '" alt="Imagem de Capa" style="max-width: 100%; border:1px solid #ccc;">'
+        : '';
+
+      document.getElementById('preview-tags-text').textContent = tagsVal || 'Sem tags';
+      document.getElementById('preview-type-text').textContent = typeVal || 'Não especificado';
+      document.getElementById('preview-detail-text').textContent = detailVal || '';
+
+      const previewImagesContainer = document.getElementById('preview-images');
+      previewImagesContainer.innerHTML = '';
+      if (imagesVal) {
+        const arr = imagesVal.split(',');
+        arr.forEach(url => {
+          const trimmed = url.trim();
+          if (trimmed) {
+            const img = document.createElement('img');
+            img.src = trimmed;
+            img.alt = 'Galeria';
+            img.style.maxWidth = '100px';
+            img.style.marginRight = '10px';
+            img.style.border = '1px solid #ccc';
+            previewImagesContainer.appendChild(img);
+          }
+        });
+      }
+
+      document.getElementById('preview-content').innerHTML = contentVal || '(sem conteúdo)';
+      document.getElementById('post-preview').style.display = 'block';
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<%- include('partials/head', { 
+    pageTitle: 'Escolha de Função - Coliseu Pokémon',
+    pageDescription: 'Selecione sua função para acessar o painel apropriado.',
+    pageKeywords: 'Função, Dashboard, Coliseu Pokémon'
+}) %>
+
+<body>
+    <%- include('partials/header', { activePage: 'auth' }) %>
+
+    <main class="main">
+        <section class="section">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6">
+                        <h2>Escolha como deseja acessar</h2>
+                        <p>Você possui mais de uma função atribuída. Selecione abaixo:</p>
+                        <form action="/choose-role" method="POST">
+                            <div class="mb-3">
+                                <label for="chosenRole" class="form-label">Função</label>
+                                <select id="chosenRole" name="chosenRole" class="form-select">
+                                    <% roles.forEach(function(role){ %>
+                                        <option value="<%= role %>"><%= role %></option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Confirmar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <%- include('partials/footer') %>
+
+    <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/vendor/aos/aos.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+
+</html>
