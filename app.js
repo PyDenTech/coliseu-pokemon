@@ -17,7 +17,6 @@ const db = new sqlite3.Database("./db/database.db", (err) => {
     }
 });
 
-// Criação de tabelas
 db.run(`
   CREATE TABLE IF NOT EXISTS posts (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -34,6 +33,7 @@ db.run(`
   )
 `);
 
+// Tabela users já existia, mas agora com novos campos (profile_pic, biography, facebook, instagram, x_profile).
 db.run(`
   CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -42,6 +42,11 @@ db.run(`
       password TEXT NOT NULL,
       roles TEXT DEFAULT '',
       approved INTEGER DEFAULT 0,
+      profile_pic TEXT,      -- Novo campo: foto de perfil
+      biography TEXT,        -- Novo campo: biografia
+      facebook TEXT,         -- Novo campo: link do Facebook
+      instagram TEXT,        -- Novo campo: link do Instagram
+      x_profile TEXT,        -- Novo campo: link do X (antigo Twitter)
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )
 `);
@@ -79,22 +84,113 @@ function hasRole(role) {
 
 // Rotas públicas
 app.get("/", (req, res) => {
-    res.render("index", { user: req.session.user || null });
+    const sql = `
+        SELECT p.*,
+               u.name AS authorName,
+               u.profile_pic AS authorPic,
+               u.biography AS authorBio,
+               u.facebook AS authorFacebook,
+               u.instagram AS authorInstagram,
+               u.x_profile AS authorXProfile
+        FROM posts p
+        JOIN users u ON p.authorId = u.id
+        WHERE p.status = 'publicado'
+        ORDER BY p.created_at DESC
+        LIMIT 3
+    `;
+    db.all(sql, [], (err, lastPosts) => {
+        if (err) {
+            console.error("Erro ao buscar últimas postagens:", err.message);
+            return res.status(500).send("Erro ao carregar últimas postagens.");
+        }
+        res.render("index", {
+            user: req.session.user || null,
+            lastPosts: lastPosts
+        });
+    });
 });
 
 app.get("/auth", (req, res) => {
     res.render("auth");
 });
 
-// Rota do Blog - lista postagens publicadas
+app.get("/profile", isAuthenticated, (req, res) => {
+    const userId = req.session.user.id;
+
+    const sql = `
+      SELECT id, name, email, profile_pic, biography,
+             facebook, instagram, x_profile
+      FROM users
+      WHERE id = ?
+    `;
+    db.get(sql, [userId], (err, userRow) => {
+        if (err) {
+            console.error("Erro ao buscar dados de perfil:", err.message);
+            return res.status(500).send("Erro ao carregar o perfil.");
+        }
+        if (!userRow) {
+            return res.status(404).send("Usuário não encontrado.");
+        }
+        return res.render("profile", {
+            user: req.session.user || null, // Usuário logado em sessão
+            profileUser: userRow            // Dados do perfil
+        });
+    });
+});
+
+app.post("/profile", isAuthenticated, (req, res) => {
+    const userId = req.session.user.id;
+    const {
+        name,
+        profile_pic,
+        biography,
+        facebook,
+        instagram,
+        x_profile
+    } = req.body;
+
+    const sql = `
+      UPDATE users
+      SET name = ?,
+          profile_pic = ?,
+          biography = ?,
+          facebook = ?,
+          instagram = ?,
+          x_profile = ?
+      WHERE id = ?
+    `;
+
+    db.run(
+        sql,
+        [name, profile_pic, biography, facebook, instagram, x_profile, userId],
+        function (err) {
+            if (err) {
+                console.error("Erro ao atualizar perfil:", err.message);
+                return res.status(500).send("Erro ao atualizar perfil.");
+            }
+            // Atualiza também o nome do usuário na sessão, se quiser
+            req.session.user.name = name;
+
+            return res.redirect("/profile");
+        }
+    );
+});
+
+// Rota do Blog - lista postagens publicadas (com dados do autor)
 app.get("/blog", (req, res) => {
     const sqlPublishedPosts = `
-    SELECT p.*, u.name as authorName
-    FROM posts p
-    JOIN users u ON p.authorId = u.id
-    WHERE p.status = 'publicado'
-    ORDER BY p.created_at DESC
-  `;
+      SELECT p.*,
+             u.name AS authorName,
+             u.profile_pic AS authorPic,
+             u.biography AS authorBio,
+             u.facebook AS authorFacebook,
+             u.instagram AS authorInstagram,
+             u.x_profile AS authorXProfile
+      FROM posts p
+      JOIN users u ON p.authorId = u.id
+      WHERE p.status = 'publicado'
+      ORDER BY p.created_at DESC
+    `;
     db.all(sqlPublishedPosts, [], (err, publishedPosts) => {
         if (err) {
             console.error("Erro ao buscar postagens publicadas:", err.message);
@@ -108,21 +204,27 @@ app.get("/blog", (req, res) => {
 });
 
 // Rota de detalhes de uma postagem específica (exibida se estiver publicada)
+// Também exibe dados do autor
 app.get("/blog-details/:id", (req, res) => {
     const { id } = req.params;
     const sqlDetails = `
-    SELECT p.*, u.name as authorName
-    FROM posts p
-    JOIN users u ON p.authorId = u.id
-    WHERE p.id = ?
-      AND p.status = 'publicado'
-  `;
+      SELECT p.*,
+             u.name AS authorName,
+             u.profile_pic AS authorPic,
+             u.biography AS authorBio,
+             u.facebook AS authorFacebook,
+             u.instagram AS authorInstagram,
+             u.x_profile AS authorXProfile
+      FROM posts p
+      JOIN users u ON p.authorId = u.id
+      WHERE p.id = ?
+        AND p.status = 'publicado'
+    `;
     db.get(sqlDetails, [id], (err, postRow) => {
         if (err) {
             console.error("Erro ao buscar postagem:", err.message);
             return res.status(500).send("Erro ao carregar detalhes da postagem.");
         }
-        // Se não existir ou estiver com status != publicado, retorna sem post
         return res.render("blog-details", {
             user: req.session.user || null,
             post: postRow || null,
@@ -178,7 +280,6 @@ app.post("/login", (req, res) => {
             roles: userRolesArray,
         };
 
-        // Lógica de direcionamento
         const adminGroup = ["Master", "Admin", "Moderador"];
         const writerGroup = ["Escritor"];
         const revisorGroup = ["Revisor"];
@@ -256,13 +357,18 @@ app.get("/dashboard/admin", isAuthenticated, hasRole("Admin"), (req, res) => {
             console.error("Erro ao buscar usuários:", err.message);
             return res.status(500).send("Erro ao carregar usuários.");
         }
-        // Buscar todas as postagens para exibir no painel admin
         const sqlPosts = `
-      SELECT p.*, u.name as authorName
-      FROM posts p
-      JOIN users u ON p.authorId = u.id
-      ORDER BY p.created_at DESC
-    `;
+          SELECT p.*,
+                 u.name AS authorName,
+                 u.profile_pic AS authorPic,
+                 u.biography AS authorBio,
+                 u.facebook AS authorFacebook,
+                 u.instagram AS authorInstagram,
+                 u.x_profile AS authorXProfile
+          FROM posts p
+          JOIN users u ON p.authorId = u.id
+          ORDER BY p.created_at DESC
+        `;
         db.all(sqlPosts, [], (err2, allPosts) => {
             if (err2) {
                 console.error("Erro ao buscar postagens:", err2.message);
@@ -338,16 +444,16 @@ app.post("/dashboard/admin/update-post", isAuthenticated, hasRole("Admin"), (req
         content,
     } = req.body;
     const sql = `
-    UPDATE posts
-    SET title = ?,
-        featured_image = ?,
-        images = ?,
-        tags = ?,
-        franchise_type = ?,
-        franchise_detail = ?,
-        content = ?
-    WHERE id = ?
-  `;
+      UPDATE posts
+      SET title = ?,
+          featured_image = ?,
+          images = ?,
+          tags = ?,
+          franchise_type = ?,
+          franchise_detail = ?,
+          content = ?
+      WHERE id = ?
+    `;
     db.run(
         sql,
         [
@@ -395,17 +501,17 @@ app.post("/dashboard/admin/reject-post", isAuthenticated, hasRole("Admin"), (req
         content,
     } = req.body;
     const sql = `
-    UPDATE posts
-    SET title = ?,
-        featured_image = ?,
-        images = ?,
-        tags = ?,
-        franchise_type = ?,
-        franchise_detail = ?,
-        content = ?,
-        status = 'reprovado'
-    WHERE id = ?
-  `;
+      UPDATE posts
+      SET title = ?,
+          featured_image = ?,
+          images = ?,
+          tags = ?,
+          franchise_type = ?,
+          franchise_detail = ?,
+          content = ?,
+          status = 'reprovado'
+      WHERE id = ?
+    `;
     db.run(
         sql,
         [
@@ -441,17 +547,17 @@ app.post("/dashboard/admin/publish-post", isAuthenticated, hasRole("Admin"), (re
         content,
     } = req.body;
     const sql = `
-    UPDATE posts
-    SET title = ?,
-        featured_image = ?,
-        images = ?,
-        tags = ?,
-        franchise_type = ?,
-        franchise_detail = ?,
-        content = ?,
-        status = 'publicado'
-    WHERE id = ?
-  `;
+      UPDATE posts
+      SET title = ?,
+          featured_image = ?,
+          images = ?,
+          tags = ?,
+          franchise_type = ?,
+          franchise_detail = ?,
+          content = ?,
+          status = 'publicado'
+      WHERE id = ?
+    `;
     db.run(
         sql,
         [
@@ -487,17 +593,17 @@ app.post("/dashboard/admin/unpublish-post", isAuthenticated, hasRole("Admin"), (
         content,
     } = req.body;
     const sql = `
-    UPDATE posts
-    SET title = ?,
-        featured_image = ?,
-        images = ?,
-        tags = ?,
-        franchise_type = ?,
-        franchise_detail = ?,
-        content = ?,
-        status = 'aprovado'
-    WHERE id = ?
-  `;
+      UPDATE posts
+      SET title = ?,
+          featured_image = ?,
+          images = ?,
+          tags = ?,
+          franchise_type = ?,
+          franchise_detail = ?,
+          content = ?,
+          status = 'aprovado'
+      WHERE id = ?
+    `;
     db.run(
         sql,
         [
@@ -549,9 +655,9 @@ app.post("/dashboard/writer/create-post", isAuthenticated, hasRole("Escritor"), 
 
     db.run(
         `INSERT INTO posts (
-      title, content, featured_image, images, tags,
-      franchise_type, franchise_detail, status, authorId
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          title, content, featured_image, images, tags,
+          franchise_type, franchise_detail, status, authorId
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
             title,
             content,
@@ -602,12 +708,18 @@ app.post("/dashboard/writer/delete-post", isAuthenticated, hasRole("Escritor"), 
 // Revisor
 app.get("/dashboard/revisor", isAuthenticated, hasRole("Revisor"), (req, res) => {
     const sql = `
-    SELECT p.*, u.name as authorName
-    FROM posts p
-    JOIN users u ON p.authorId = u.id
-    WHERE p.status = 'pendente'
-    ORDER BY p.created_at DESC
-  `;
+        SELECT p.*,
+               u.name AS authorName,
+               u.profile_pic AS authorPic,
+               u.biography AS authorBio,
+               u.facebook AS authorFacebook,
+               u.instagram AS authorInstagram,
+               u.x_profile AS authorXProfile
+        FROM posts p
+        JOIN users u ON p.authorId = u.id
+        WHERE p.status = 'pendente'
+        ORDER BY p.created_at DESC
+    `;
     db.all(sql, [], (err, postRows) => {
         if (err) {
             console.error("Erro ao buscar postagens pendentes:", err.message);
@@ -632,16 +744,16 @@ app.post("/dashboard/revisor/update-post", isAuthenticated, hasRole("Revisor"), 
         content,
     } = req.body;
     const sql = `
-    UPDATE posts
-    SET title = ?,
-        featured_image = ?,
-        images = ?,
-        tags = ?,
-        franchise_type = ?,
-        franchise_detail = ?,
-        content = ?
-    WHERE id = ?
-  `;
+      UPDATE posts
+      SET title = ?,
+          featured_image = ?,
+          images = ?,
+          tags = ?,
+          franchise_type = ?,
+          franchise_detail = ?,
+          content = ?
+      WHERE id = ?
+    `;
     db.run(
         sql,
         [title, featuredImage, images, tags, franchiseType, franchiseDetail, content, postId],
@@ -667,17 +779,17 @@ app.post("/dashboard/revisor/request-changes", isAuthenticated, hasRole("Revisor
         content,
     } = req.body;
     const sql = `
-    UPDATE posts
-    SET title = ?,
-        featured_image = ?,
-        images = ?,
-        tags = ?,
-        franchise_type = ?,
-        franchise_detail = ?,
-        content = ?,
-        status = 'revisao'
-    WHERE id = ?
-  `;
+      UPDATE posts
+      SET title = ?,
+          featured_image = ?,
+          images = ?,
+          tags = ?,
+          franchise_type = ?,
+          franchise_detail = ?,
+          content = ?,
+          status = 'revisao'
+      WHERE id = ?
+    `;
     db.run(
         sql,
         [title, featuredImage, images, tags, franchiseType, franchiseDetail, content, postId],
@@ -705,17 +817,17 @@ app.post("/dashboard/revisor/approve-post", isAuthenticated, hasRole("Revisor"),
         content,
     } = req.body;
     const sql = `
-    UPDATE posts
-    SET title = ?,
-        featured_image = ?,
-        images = ?,
-        tags = ?,
-        franchise_type = ?,
-        franchise_detail = ?,
-        content = ?,
-        status = 'aprovado'
-    WHERE id = ?
-  `;
+      UPDATE posts
+      SET title = ?,
+          featured_image = ?,
+          images = ?,
+          tags = ?,
+          franchise_type = ?,
+          franchise_detail = ?,
+          content = ?,
+          status = 'aprovado'
+      WHERE id = ?
+    `;
     db.run(
         sql,
         [title, featuredImage, images, tags, franchiseType, franchiseDetail, content, postId],

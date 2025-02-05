@@ -620,92 +620,45 @@
                     </div><!-- End Section Title -->
 
                     <div class="container">
-
                         <div class="row gy-4">
-
-                            <div class="col-xl-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-                                <article>
-
-                                    <div class="post-img">
-                                        <img src="/img/blog/blog-1.jpg" alt="" class="img-fluid">
-                                    </div>
-
-                                    <p class="post-category">Eventos</p>
-
-                                    <h2 class="title">
-                                        <a href="blog-details.html">Grande Torneio de Batalha Pokémon anunciado!</a>
-                                    </h2>
-
-                                    <div class="d-flex align-items-center">
-                                        <img src="/img/blog/blog-author.jpg" alt="Autor"
-                                            class="img-fluid post-author-img flex-shrink-0">
-                                        <div class="post-meta">
-                                            <p class="post-author">Ash Ketchum</p>
-                                            <p class="post-date">
-                                                <time datetime="2024-11-01">Nov 1, 2024</time>
+                            <% if (lastPosts && lastPosts.length> 0) { %>
+                                <% lastPosts.forEach((post, index)=> { %>
+                                    <div class="col-xl-4 col-md-6" data-aos="fade-up"
+                                        data-aos-delay="<%= (index+1)*100 %>">
+                                        <article>
+                                            <div class="post-img">
+                                                <img src="<%= post.featured_image ? post.featured_image : '/img/blog/blog-1.jpg' %>"
+                                                    alt="<%= post.title %>" class="img-fluid">
+                                            </div>
+                                            <p class="post-category">
+                                                <%= post.tags ? post.tags : 'Notícia' %>
                                             </p>
-                                        </div>
+                                            <h2 class="title">
+                                                <a href="/blog-details/<%= post.id %>">
+                                                    <%= post.title %>
+                                                </a>
+                                            </h2>
+                                            <div class="d-flex align-items-center">
+                                                <img src="/img/blog/blog-author.jpg" alt="Autor"
+                                                    class="img-fluid post-author-img flex-shrink-0">
+                                                <div class="post-meta">
+                                                    <p class="post-author">
+                                                        <%= post.authorName %>
+                                                    </p>
+                                                    <p class="post-date">
+                                                        <time datetime="<%= post.created_at %>">
+                                                            <%= new Date(post.created_at).toLocaleDateString('pt-BR') %>
+                                                        </time>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </article>
                                     </div>
-
-                                </article>
-                            </div><!-- End post list item -->
-
-                            <div class="col-xl-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-                                <article>
-
-                                    <div class="post-img">
-                                        <img src="/img/blog/blog-2.jpg" alt="" class="img-fluid">
-                                    </div>
-
-                                    <p class="post-category">Dicas</p>
-
-                                    <h2 class="title">
-                                        <a href="blog-details.html">Como capturar Pokémon lendários facilmente</a>
-                                    </h2>
-
-                                    <div class="d-flex align-items-center">
-                                        <img src="/img/blog/blog-author-2.jpg" alt="Autor"
-                                            class="img-fluid post-author-img flex-shrink-0">
-                                        <div class="post-meta">
-                                            <p class="post-author">Danilo de Morais</p>
-                                            <p class="post-date">
-                                                <time datetime="2024-10-25">Out 25, 2024</time>
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                </article>
-                            </div><!-- End post list item -->
-
-                            <div class="col-xl-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-                                <article>
-
-                                    <div class="post-img">
-                                        <img src="/img/blog/blog-3.jpg" alt="" class="img-fluid">
-                                    </div>
-
-                                    <p class="post-category">Novidades</p>
-
-                                    <h2 class="title">
-                                        <a href="blog-details.html">Novos Pokémon revelados na última atualização!</a>
-                                    </h2>
-
-                                    <div class="d-flex align-items-center">
-                                        <img src="/img/blog/blog-author-3.jpg" alt="Autor"
-                                            class="img-fluid post-author-img flex-shrink-0">
-                                        <div class="post-meta">
-                                            <p class="post-author">Misty Waterflower</p>
-                                            <p class="post-date">
-                                                <time datetime="2024-10-15">Out 15, 2024</time>
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                </article>
-                            </div><!-- End post list item -->
-
-                        </div><!-- End recent posts list -->
-
+                                    <% }); %>
+                                        <% } else { %>
+                                            <p>Nenhuma notícia disponível no momento.</p>
+                                            <% } %>
+                        </div>
                     </div>
 
                 </section><!-- /Recent Posts Section -->

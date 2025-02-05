@@ -1,0 +1,125 @@
+<!-- views/profile.ejs -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <%- include('partials/head', { pageTitle: "Meu Perfil - Coliseu Pokémon" ,
+        pageDescription: "Área de perfil do usuário - Coliseu Pokémon" ,
+        pageKeywords: "perfil, usuário, coliseu pokémon" }) %>
+</head>
+
+<body>
+    <!-- Header -->
+    <%- include('partials/header', { activePage: '' }) %>
+
+        <main class="main">
+
+            <!-- Exemplo de 'breadcrumb' -->
+            <div class="page-title dark-background">
+                <div class="container position-relative">
+                    <h1>Meu Perfil</h1>
+                    <p>Gerencie suas informações de usuário.</p>
+                    <nav class="breadcrumbs">
+                        <ol>
+                            <li><a href="/">Início</a></li>
+                            <li class="current">Meu Perfil</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="container mt-4">
+                <div class="row">
+                    <div class="col-md-8 offset-md-2">
+
+                        <h3>Informações do Perfil</h3>
+                        <hr>
+
+                        <!-- Card de exibição rápida -->
+                        <div class="card mb-4">
+                            <div class="card-body d-flex align-items-center">
+                                <div>
+                                    <img src="<%= profileUser.profile_pic ? profileUser.profile_pic : '/img/default-avatar.png' %>"
+                                        alt="Foto de Perfil" class="rounded-circle"
+                                        style="width:80px; height:80px; object-fit:cover;">
+                                </div>
+                                <div class="ms-3">
+                                    <h5 class="mb-0">
+                                        <%= profileUser.name %>
+                                    </h5>
+                                    <p class="mb-0">
+                                        <%= profileUser.email %>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Formulário para editar dados do perfil -->
+                        <form action="/profile" method="POST">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Nome</label>
+                                <input type="text" class="form-control" id="name" name="name"
+                                    value="<%= profileUser.name %>" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="profile_pic" class="form-label">URL da Foto de Perfil</label>
+                                <input type="text" class="form-control" id="profile_pic" name="profile_pic"
+                                    value="<%= profileUser.profile_pic || '' %>"
+                                    placeholder="Ex: https://exemplo.com/minha-foto.jpg">
+                                <small class="text-muted">Insira a URL da imagem desejada</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="biography" class="form-label">Biografia</label>
+                                <textarea class="form-control" id="biography" name="biography"
+                                    rows="3"><%= profileUser.biography || '' %></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="facebook" class="form-label">Facebook</label>
+                                <input type="text" class="form-control" id="facebook" name="facebook"
+                                    value="<%= profileUser.facebook || '' %>"
+                                    placeholder="Ex: https://facebook.com/meu-usuario">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="instagram" class="form-label">Instagram</label>
+                                <input type="text" class="form-control" id="instagram" name="instagram"
+                                    value="<%= profileUser.instagram || '' %>"
+                                    placeholder="Ex: https://instagram.com/meu-usuario">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="x_profile" class="form-label">X (Antigo Twitter)</label>
+                                <input type="text" class="form-control" id="x_profile" name="x_profile"
+                                    value="<%= profileUser.x_profile || '' %>"
+                                    placeholder="Ex: https://x.com/meu-usuario">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">
+                                Atualizar Perfil
+                            </button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Footer -->
+        <%- include('partials/footer') %>
+
+            <!-- Scripts JS -->
+            <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+            <script src="/vendor/php-email-form/validate.js"></script>
+            <script src="/vendor/aos/aos.js"></script>
+            <script src="/vendor/glightbox/js/glightbox.min.js"></script>
+            <script src="/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
+            <script src="/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+            <script src="/vendor/swiper/swiper-bundle.min.js"></script>
+            <script src="/js/main.js"></script>
+</body>
+
+</html>
