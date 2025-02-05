@@ -17,7 +17,6 @@
         <!-- Barra Lateral (Sidebar) simulando abas -->
         <nav id="sidebar">
             <ul class="nav flex-column">
-                <!-- Clique em cada link para exibir a seção correspondente -->
                 <li class="nav-item">
                     <a class="nav-link active" href="#" data-target="tab-dashboard">Dashboard</a>
                 </li>
@@ -152,7 +151,6 @@
                                 <td><%= u.name %></td>
                                 <td><%= u.email %></td>
                                 <td>
-                                    <!-- Exemplo de multi-select para roles -->
                                     <form action="/dashboard/admin/update-roles" method="POST" class="d-inline">
                                         <input type="hidden" name="userId" value="<%= u.id %>">
                                         <select name="roles[]" multiple class="form-select form-select-sm" style="min-width:120px;">
@@ -169,7 +167,6 @@
                                     <%= u.approved ? 'Sim' : 'Não' %>
                                 </td>
                                 <td>
-                                    <!-- Botão Aprovar/Revogar -->
                                     <form action="/dashboard/admin/toggle-approve" method="POST" class="d-inline">
                                         <input type="hidden" name="userId" value="<%= u.id %>">
                                         <button type="submit" class="btn btn-sm <%= u.approved ? 'btn-warning' : 'btn-success' %>">
@@ -177,7 +174,6 @@
                                         </button>
                                     </form>
 
-                                    <!-- Botão Excluir -->
                                     <form action="/dashboard/admin/delete-user" method="POST" class="d-inline">
                                         <input type="hidden" name="userId" value="<%= u.id %>">
                                         <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
@@ -194,8 +190,41 @@
             <!-- Seção Gerenciar Postagens -->
             <div id="tab-posts" class="tab-section" style="display: none;">
                 <h2>Gerenciar Postagens</h2>
-                <p>Aqui você poderá visualizar, editar, aprovar ou remover postagens do blog.</p>
-                <!-- Conteúdo futuro de gerenciamento de postagens -->
+                <p>Aqui você poderá visualizar, editar, aprovar, publicar ou remover postagens do blog.</p>
+                
+                <div class="table-responsive mt-4">
+                    <table class="table table-bordered align-middle">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Título</th>
+                                <th>Status</th>
+                                <th>Autor</th>
+                                <th>Criado em</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (allPosts) { 
+                                allPosts.forEach(post => { %>
+                                <tr>
+                                    <td><%= post.id %></td>
+                                    <td><%= post.title %></td>
+                                    <td><%= post.status %></td>
+                                    <td><%= post.authorName %></td>
+                                    <td><%= post.created_at %></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary" onclick="showPostModal(<%= post.id %>)">Visualizar</button>
+                                        <form action="/dashboard/admin/delete-post" method="POST" class="d-inline">
+                                            <input type="hidden" name="postId" value="<%= post.id %>">
+                                            <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <% }) } %>
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <!-- /Seção Gerenciar Postagens -->
 
@@ -203,44 +232,267 @@
             <div id="tab-settings" class="tab-section" style="display: none;">
                 <h2>Configurações</h2>
                 <p>Aqui você pode ajustar configurações gerais do site.</p>
-                <!-- Conteúdo futuro de configurações -->
             </div>
             <!-- /Seção Configurações -->
 
         </div>
     </div>
 
+    <!-- MODAL: Visualizar/Editar Postagem -->
+    <div class="modal fade" id="postModal" tabindex="-1" aria-labelledby="postModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+          
+          <div class="modal-header">
+            <h5 class="modal-title" id="postModalLabel">Gerenciar Postagem</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          
+          <div class="modal-body">
+
+            <form id="admin-post-form" action="/dashboard/admin/update-post" method="POST">
+              <input type="hidden" name="postId" id="admin-post-id" value="">
+
+              <div class="mb-3">
+                <label for="admin-post-title" class="form-label">Título</label>
+                <input type="text" class="form-control" id="admin-post-title" name="title" required>
+              </div>
+
+              <div class="mb-3">
+                <label for="admin-featured-image" class="form-label">Imagem de Capa (URL)</label>
+                <input type="text" class="form-control" id="admin-featured-image" name="featuredImage">
+              </div>
+
+              <div class="mb-3">
+                <label for="admin-images" class="form-label">Galeria de Imagens (URLs separadas por vírgula)</label>
+                <input type="text" class="form-control" id="admin-images" name="images">
+              </div>
+
+              <div class="mb-3">
+                <label for="admin-tags" class="form-label">Tags (separadas por vírgula)</label>
+                <input type="text" class="form-control" id="admin-tags" name="tags">
+              </div>
+
+              <div class="mb-3">
+                <label for="admin-franchise-type" class="form-label">Tipo de Conteúdo</label>
+                <select id="admin-franchise-type" name="franchiseType" class="form-select">
+                  <option value="">Selecione</option>
+                  <option value="Jogo">Jogo</option>
+                  <option value="Anime">Anime</option>
+                  <option value="Filme">Filme</option>
+                  <option value="Outros">Outros</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label for="admin-franchise-detail" class="form-label">Detalhes da Franquia</label>
+                <input type="text" class="form-control" id="admin-franchise-detail" name="franchiseDetail">
+              </div>
+
+              <div class="mb-3">
+                <label for="admin-content" class="form-label">Conteúdo</label>
+                <textarea id="admin-content" class="form-control" name="content" rows="6"></textarea>
+              </div>
+
+              <div class="mb-3 d-flex justify-content-end">
+                <button type="submit" class="btn btn-success">Salvar Alterações</button>
+              </div>
+
+              <hr class="my-4">
+
+              <div class="d-flex justify-content-between">
+                <button type="button" class="btn btn-warning" onclick="rejectPost()">Reprovar</button>
+                <button type="button" class="btn btn-primary" onclick="publishPost()">Publicar</button>
+                <button type="button" class="btn btn-secondary" onclick="unpublishPost()">Despublicar</button>
+              </div>
+
+            </form>
+
+            <!-- Pré-visualização -->
+            <hr class="my-4">
+            <h5>Pré-visualização</h5>
+            <div class="card p-3">
+              <main class="main">
+                <div class="page-title dark-background">
+                  <div class="container position-relative">
+                    <h1 id="preview-admin-title"></h1>
+                    <p>Página de pré-visualização (Admin).</p>
+                  </div>
+                </div>
+                <div class="container mt-4">
+                  <div class="row">
+                    <div class="col-lg-8">
+                      <section id="blog-details" class="blog-details section">
+                        <div class="container">
+                          <article class="article">
+                            <div class="post-img" id="preview-admin-featuredImage"></div>
+                            <h2 class="title" id="preview-admin-main-title"></h2>
+                            <div class="content" id="preview-admin-content"></div>
+                            <div class="meta-bottom d-flex align-items-center" style="justify-content: space-between;">
+                              <div>
+                                <i class="bi bi-folder"></i>
+                                <ul class="cats d-inline">
+                                  <li id="preview-admin-franchiseType"></li>
+                                </ul>
+                                <i class="bi bi-tags ms-3"></i>
+                                <ul class="tags d-inline">
+                                  <li id="preview-admin-tags"></li>
+                                </ul>
+                              </div>
+                              <small id="preview-admin-franchiseDetail" style="color:var(--accent-color); font-weight:600;"></small>
+                            </div>
+                          </article>
+                          <div id="preview-admin-images" class="mb-3 mt-3 d-flex flex-wrap"></div>
+                        </div>
+                      </section>
+                    </div>
+                    <div class="col-lg-4 sidebar">
+                      <div class="widgets-container">
+                        <div class="blog-author-widget widget-item">
+                          <div class="d-flex flex-column align-items-center">
+                            <img src="https://via.placeholder.com/150" class="rounded-circle flex-shrink-0" alt="">
+                            <h4>Autor Original</h4>
+                            <p style="text-align:center; font-style:italic;">
+                              Visualização de como ficará o post.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div><!-- /sidebar -->
+                  </div>
+                </div>
+              </main>
+            </div>
+            <!-- /Pré-visualização -->
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /MODAL -->
+
+
     <%- include('../partials/footer') %>
 
     <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="/js/main.js"></script>
+    <script src="https://cdn.ckeditor.com/4.25.0-lts/standard/ckeditor.js"></script>
+
     <script>
-        // Função para alternar entre as abas (seções) via clique no sidebar
-        const sidebarLinks = document.querySelectorAll('#sidebar .nav-link');
-        const tabSections = document.querySelectorAll('.tab-section');
+      const sidebarLinks = document.querySelectorAll('#sidebar .nav-link');
+      const tabSections = document.querySelectorAll('.tab-section');
 
-        function showTab(event) {
-            event.preventDefault();
-            const targetId = event.target.getAttribute('data-target');
+      sidebarLinks.forEach(link => {
+        link.addEventListener('click', showTab);
+      });
 
-            // Remove .active de todos os links
-            sidebarLinks.forEach(link => link.classList.remove('active'));
+      function showTab(event) {
+        event.preventDefault();
+        const targetId = event.target.getAttribute('data-target');
+        sidebarLinks.forEach(l => l.classList.remove('active'));
+        tabSections.forEach(sec => sec.style.display = 'none');
+        document.getElementById(targetId).style.display = 'block';
+        event.target.classList.add('active');
+      }
 
-            // Esconde todas as seções
-            tabSections.forEach(sec => sec.style.display = 'none');
-
-            // Mostra apenas a seção alvo
-            document.getElementById(targetId).style.display = 'block';
-
-            // Adiciona .active ao link clicado
-            event.target.classList.add('active');
+      // CKEditor para o modal
+      let adminEditor;
+      function initAdminEditor() {
+        if (!adminEditor) {
+          adminEditor = CKEDITOR.replace('admin-content');
         }
+      }
 
-        // Adiciona o listener para cada link
-        sidebarLinks.forEach(link => {
-            link.addEventListener('click', showTab);
+      function showPostModal(postId) {
+        initAdminEditor();
+        // Buscar post da lista
+        const postData = <%- JSON.stringify(allPosts || []) %>.find(item => item.id === postId);
+
+        document.getElementById('admin-post-id').value = postData.id;
+        document.getElementById('admin-post-title').value = postData.title || '';
+        document.getElementById('admin-featured-image').value = postData.featured_image || '';
+        document.getElementById('admin-images').value = postData.images || '';
+        document.getElementById('admin-tags').value = postData.tags || '';
+        document.getElementById('admin-franchise-type').value = postData.franchise_type || '';
+        document.getElementById('admin-franchise-detail').value = postData.franchise_detail || '';
+        adminEditor.setData(postData.content || '');
+
+        buildAdminPreview();
+
+        const modal = new bootstrap.Modal(document.getElementById('postModal'), {
+          backdrop: 'static',
+          keyboard: false
         });
-    </script>
-</body>
+        modal.show();
+      }
 
+      function buildAdminPreview() {
+        const tVal = document.getElementById('admin-post-title').value.trim();
+        const fVal = document.getElementById('admin-featured-image').value.trim();
+        const iVal = document.getElementById('admin-images').value.trim();
+        const tgVal = document.getElementById('admin-tags').value.trim();
+        const typeVal = document.getElementById('admin-franchise-type').value.trim();
+        const detVal = document.getElementById('admin-franchise-detail').value.trim();
+        const contentVal = adminEditor.getData();
+
+        document.getElementById('preview-admin-title').textContent = tVal || '(sem título)';
+        document.getElementById('preview-admin-main-title').textContent = tVal || '(sem título)';
+
+        const featuredDiv = document.getElementById('preview-admin-featuredImage');
+        featuredDiv.innerHTML = fVal
+          ? `<img src="${fVal}" alt="Imagem de Capa" style="max-width:100%; border:1px solid #ccc;">`
+          : '';
+
+        document.getElementById('preview-admin-tags').textContent = tgVal || 'Sem tags';
+        document.getElementById('preview-admin-franchiseType').textContent = typeVal || 'Não especificado';
+        document.getElementById('preview-admin-franchiseDetail').textContent = detVal || '';
+
+        const imagesDiv = document.getElementById('preview-admin-images');
+        imagesDiv.innerHTML = '';
+        if (iVal) {
+          const arr = iVal.split(',');
+          arr.forEach(url => {
+            const trimmed = url.trim();
+            if (trimmed) {
+              const img = document.createElement('img');
+              img.src = trimmed;
+              img.alt = 'Galeria';
+              img.style.maxWidth = '100px';
+              img.style.marginRight = '10px';
+              img.style.border = '1px solid #ccc';
+              imagesDiv.appendChild(img);
+            }
+          });
+        }
+        document.getElementById('preview-admin-content').innerHTML = contentVal || '(sem conteúdo)';
+      }
+
+      document.getElementById('admin-post-title').addEventListener('input', buildAdminPreview);
+      document.getElementById('admin-featured-image').addEventListener('input', buildAdminPreview);
+      document.getElementById('admin-images').addEventListener('input', buildAdminPreview);
+      document.getElementById('admin-tags').addEventListener('input', buildAdminPreview);
+      document.getElementById('admin-franchise-type').addEventListener('change', buildAdminPreview);
+      document.getElementById('admin-franchise-detail').addEventListener('input', buildAdminPreview);
+
+      // Ações de reprovar, publicar, despublicar
+      function rejectPost() {
+        const form = document.getElementById('admin-post-form');
+        form.action = '/dashboard/admin/reject-post';
+        form.submit();
+      }
+
+      function publishPost() {
+        const form = document.getElementById('admin-post-form');
+        form.action = '/dashboard/admin/publish-post';
+        form.submit();
+      }
+
+      function unpublishPost() {
+        const form = document.getElementById('admin-post-form');
+        form.action = '/dashboard/admin/unpublish-post';
+        form.submit();
+      }
+    </script>
+
+</body>
 </html>

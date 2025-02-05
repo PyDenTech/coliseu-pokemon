@@ -2,26 +2,322 @@
 <html lang="pt-br">
 
 <%- include('../partials/head', { 
-    pageTitle: 'Painel Revisor - Coliseu Pokémon',
-    pageDescription: 'Painel de revisão do Coliseu Pokémon',
-    pageKeywords: 'Revisor, Coliseu Pokémon'
+  pageTitle: 'Painel Revisor - Coliseu Pokémon',
+  pageDescription: 'Painel de revisão do Coliseu Pokémon',
+  pageKeywords: 'Revisor, Coliseu Pokémon'
 }) %>
 
 <body>
-    <%- include('../partials/header-dashboard', { user: user }) %>
+  <%- include('../partials/header-dashboard', { user: user }) %>
 
-    <div class="container mt-4">
-        <h1>Dashboard Revisor</h1>
-        <p>Bem-vindo, <%= user.name %>!</p>
+  <div class="d-flex">
+
+    <!-- Barra Lateral (Sidebar) simulando abas -->
+    <nav id="sidebar">
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link active" href="#" data-target="tab-revisor-dashboard">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" data-target="tab-revisor-posts">Revisar Postagens</a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Conteúdo Principal -->
+    <div class="main-content container-fluid">
+
+      <!-- Seção Dashboard -->
+      <div id="tab-revisor-dashboard" class="tab-section" style="display: block;">
+        <h1 class="mb-4">Bem-vindo, <%= user.name %>!</h1>
         <p>Suas roles: <%= user.roles.join(", ") %></p>
         <hr>
-        <p>Em breve: área para revisar e aprovar postagens.</p>
+        <p>Aqui você pode revisar, aprovar ou solicitar alterações em postagens pendentes.</p>
         <a href="/logout" class="btn btn-danger mt-3">Sair</a>
-    </div>
+      </div>
+      <!-- /Seção Dashboard -->
 
-    <%- include('../partials/footer') %>
-    <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/main.js"></script>
+      <!-- Seção Revisar Postagens -->
+      <div id="tab-revisor-posts" class="tab-section" style="display: none;">
+        <h2 class="mb-4">Postagens Pendentes de Revisão</h2>
+        <div class="table-responsive">
+          <table class="table table-bordered align-middle">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Título</th>
+                <th>Autor</th>
+                <th>Status</th>
+                <th>Data Criação</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% posts.forEach(post => { %>
+              <tr>
+                <td><%= post.id %></td>
+                <td><%= post.title %></td>
+                <td><%= post.authorName %></td>
+                <td><%= post.status %></td>
+                <td><%= post.created_at %></td>
+                <td>
+                  <button class="btn btn-sm btn-primary" 
+                          onclick="showPreviewModal(<%= post.id %>)">
+                    Visualizar
+                  </button>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- /Seção Revisar Postagens -->
+
+    </div>
+  </div>
+
+  <!-- MODAL PARA PRÉ-VISUALIZAR E EDITAR POSTAGEM -->
+  <div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+      <div class="modal-content">
+        
+        <div class="modal-header">
+          <h5 class="modal-title" id="previewModalLabel">Revisar Postagem</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        
+        <div class="modal-body">
+
+          <form id="revisor-form" action="/dashboard/revisor/update-post" method="POST">
+            <input type="hidden" name="postId" id="modal-post-id" value="">
+            
+            <div class="mb-3">
+              <label for="modal-post-title" class="form-label">Título</label>
+              <input type="text" class="form-control" id="modal-post-title" name="title" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="modal-featured-image" class="form-label">Imagem de Capa (URL)</label>
+              <input type="text" class="form-control" id="modal-featured-image" name="featuredImage">
+            </div>
+
+            <div class="mb-3">
+              <label for="modal-images" class="form-label">Galeria de Imagens (URLs separadas por vírgula)</label>
+              <input type="text" class="form-control" id="modal-images" name="images">
+            </div>
+
+            <div class="mb-3">
+              <label for="modal-tags" class="form-label">Tags (separadas por vírgula)</label>
+              <input type="text" class="form-control" id="modal-tags" name="tags">
+            </div>
+
+            <div class="mb-3">
+              <label for="modal-franchise-type" class="form-label">Tipo de Conteúdo</label>
+              <select id="modal-franchise-type" name="franchiseType" class="form-select">
+                <option value="">Selecione</option>
+                <option value="Jogo">Jogo</option>
+                <option value="Anime">Anime</option>
+                <option value="Filme">Filme</option>
+                <option value="Outros">Outros</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="modal-franchise-detail" class="form-label">Detalhes da Franquia</label>
+              <input type="text" class="form-control" id="modal-franchise-detail" name="franchiseDetail">
+            </div>
+
+            <div class="mb-3">
+              <label for="modal-content" class="form-label">Conteúdo</label>
+              <textarea id="modal-content" class="form-control" name="content" rows="6"></textarea>
+            </div>
+
+            <div class="d-flex justify-content-end">
+              <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-success">Salvar Alterações</button>
+            </div>
+
+            <hr class="my-4">
+            <div class="d-flex justify-content-between">
+              <button type="button" class="btn btn-warning" onclick="requestChanges()">Solicitar Alterações</button>
+              <button type="button" class="btn btn-primary" onclick="approvePost()">Aprovar Postagem</button>
+            </div>
+          </form>
+
+          <!-- Pré-visualização da Postagem -->
+          <hr class="my-4">
+          <h5>Pré-Visualização</h5>
+          <div class="card p-3">
+            <main class="main">
+              <div class="page-title dark-background">
+                <div class="container position-relative">
+                  <h1 id="preview-post-title"></h1>
+                  <p>Pré-visualização para revisão.</p>
+                </div>
+              </div>
+              <div class="container mt-4">
+                <div class="row">
+                  <div class="col-lg-8">
+                    <section id="blog-details" class="blog-details section">
+                      <div class="container">
+                        <article class="article">
+                          <div class="post-img" id="preview-featuredImage"></div>
+                          <h2 class="title" id="preview-blog-post-title"></h2>
+                          <div class="content" id="preview-post-content"></div>
+                          <div class="meta-bottom d-flex align-items-center" style="justify-content: space-between;">
+                            <div>
+                              <i class="bi bi-folder"></i>
+                              <ul class="cats d-inline">
+                                <li id="preview-franchiseType"></li>
+                              </ul>
+                              <i class="bi bi-tags ms-3"></i>
+                              <ul class="tags d-inline">
+                                <li id="preview-tags"></li>
+                              </ul>
+                            </div>
+                            <small id="preview-franchiseDetail" style="color:var(--accent-color); font-weight:600;"></small>
+                          </div>
+                        </article>
+                        <div id="preview-images" class="mb-3 mt-3 d-flex flex-wrap"></div>
+                      </div>
+                    </section>
+                  </div>
+                  <div class="col-lg-4 sidebar">
+                    <div class="widgets-container">
+                      <div class="blog-author-widget widget-item">
+                        <div class="d-flex flex-column align-items-center">
+                          <img src="https://via.placeholder.com/150" class="rounded-circle flex-shrink-0" alt="">
+                          <h4>Autor Original</h4>
+                          <p style="text-align:center; font-style:italic;">
+                            Post criado pelo Escritor.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div><!-- /sidebar -->
+                </div>
+              </div>
+            </main>
+          </div>
+          <!-- /Pré-visualização -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /MODAL -->
+
+  <%- include('../partials/footer') %>
+
+  <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/main.js"></script>
+  <script src="https://cdn.ckeditor.com/4.25.0-lts/standard/ckeditor.js"></script>
+  <script>
+    let ckEditorModal;
+
+    const sidebarLinks = document.querySelectorAll('#sidebar .nav-link');
+    const tabSections = document.querySelectorAll('.tab-section');
+    sidebarLinks.forEach(link => {
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        const targetId = event.target.getAttribute('data-target');
+        sidebarLinks.forEach(l => l.classList.remove('active'));
+        tabSections.forEach(sec => sec.style.display = 'none');
+        document.getElementById(targetId).style.display = 'block';
+        event.target.classList.add('active');
+      });
+    });
+
+    function showPreviewModal(postId) {
+      // Buscar dados do post via AJAX (ou já fornecidos via array)
+      const postData = <%- JSON.stringify(posts) %>.find(item => item.id === postId);
+
+      // Preencher os campos no modal
+      document.getElementById('modal-post-id').value = postData.id;
+      document.getElementById('modal-post-title').value = postData.title || '';
+      document.getElementById('modal-featured-image').value = postData.featured_image || '';
+      document.getElementById('modal-images').value = postData.images || '';
+      document.getElementById('modal-tags').value = postData.tags || '';
+      document.getElementById('modal-franchise-type').value = postData.franchise_type || '';
+      document.getElementById('modal-franchise-detail').value = postData.franchise_detail || '';
+
+      // Inicializar CKEditor se ainda não estiver
+      if (!ckEditorModal) {
+        ckEditorModal = CKEDITOR.replace('modal-content');
+      }
+      ckEditorModal.setData(postData.content || '');
+
+      // Montar preview
+      buildPreview();
+
+      // Abrir modal
+      const modal = new bootstrap.Modal(document.getElementById('previewModal'), {
+        backdrop: 'static',
+        keyboard: false
+      });
+      modal.show();
+    }
+
+    function buildPreview() {
+      const titleVal = document.getElementById('modal-post-title').value.trim();
+      const featuredImageVal = document.getElementById('modal-featured-image').value.trim();
+      const imagesVal = document.getElementById('modal-images').value.trim();
+      const tagsVal = document.getElementById('modal-tags').value.trim();
+      const typeVal = document.getElementById('modal-franchise-type').value.trim();
+      const detailVal = document.getElementById('modal-franchise-detail').value.trim();
+      const contentVal = ckEditorModal.getData();
+
+      document.getElementById('preview-post-title').textContent = titleVal || '(sem título)';
+      document.getElementById('preview-blog-post-title').textContent = titleVal || '(sem título)';
+
+      const featuredContainer = document.getElementById('preview-featuredImage');
+      featuredContainer.innerHTML = featuredImageVal
+        ? `<img src="${featuredImageVal}" alt="Imagem de Capa" style="max-width:100%; border:1px solid #ccc;">`
+        : '';
+
+      document.getElementById('preview-tags').textContent = tagsVal || 'Sem tags';
+      document.getElementById('preview-franchiseType').textContent = typeVal || 'Não especificado';
+      document.getElementById('preview-franchiseDetail').textContent = detailVal || '';
+
+      const imagesContainer = document.getElementById('preview-images');
+      imagesContainer.innerHTML = '';
+      if (imagesVal) {
+        const arr = imagesVal.split(',');
+        arr.forEach(url => {
+          const trimmed = url.trim();
+          if (trimmed) {
+            const img = document.createElement('img');
+            img.src = trimmed;
+            img.alt = 'Galeria';
+            img.style.maxWidth = '100px';
+            img.style.marginRight = '10px';
+            img.style.border = '1px solid #ccc';
+            imagesContainer.appendChild(img);
+          }
+        });
+      }
+      document.getElementById('preview-post-content').innerHTML = contentVal || '(sem conteúdo)';
+    }
+
+    // Atualizar pré-visualização ao alterar campos
+    document.getElementById('modal-post-title').addEventListener('input', buildPreview);
+    document.getElementById('modal-featured-image').addEventListener('input', buildPreview);
+    document.getElementById('modal-images').addEventListener('input', buildPreview);
+    document.getElementById('modal-tags').addEventListener('input', buildPreview);
+    document.getElementById('modal-franchise-type').addEventListener('change', buildPreview);
+    document.getElementById('modal-franchise-detail').addEventListener('input', buildPreview);
+
+    function requestChanges() {
+      document.getElementById('revisor-form').action = '/dashboard/revisor/request-changes';
+      document.getElementById('revisor-form').submit();
+    }
+
+    function approvePost() {
+      document.getElementById('revisor-form').action = '/dashboard/revisor/approve-post';
+      document.getElementById('revisor-form').submit();
+    }
+  </script>
 </body>
 
 </html>
