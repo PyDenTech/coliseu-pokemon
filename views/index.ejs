@@ -10,17 +10,15 @@
         <!-- Header -->
         <%- include('partials/header', { activePage: 'home' }) %>
 
-            <!-- Conteúdo Principal -->
             <main class="main">
 
                 <!-- Hero Section -->
                 <section id="hero" class="hero section dark-background">
 
-                    <div class="overlay"></div> <!-- Overlay para máscara preta transparente -->
+                    <div class="overlay"></div>
 
                     <div id="hero-carousel" data-bs-interval="5000" class="carousel carousel-fade"
                         data-bs-ride="carousel">
-
                         <!-- Slide 1 -->
                         <div class="carousel-item active"
                             style="background-image: url('/img/slide1.png'); background-size: cover; background-position: center; background-repeat: no-repeat; width: 100vw;">
@@ -68,14 +66,14 @@
                         <a class="carousel-control-next" href="#hero-carousel" role="button" data-bs-slide="next">
                             <span class="carousel-control-next-icon bi bi-chevron-right" aria-hidden="true"></span>
                         </a>
-
                     </div>
 
                     <svg class="hero-waves" xmlns="http://www.w3.org/2000/svg"
-                        xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28 " preserveAspectRatio="none">
+                        xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none">
                         <defs>
                             <path id="wave-path"
-                                d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"></path>
+                                d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z">
+                            </path>
                         </defs>
                         <g class="wave1">
                             <use xlink:href="#wave-path" x="50" y="3"></use>
@@ -88,22 +86,18 @@
                         </g>
                     </svg>
 
-                </section><!-- /Hero Section -->
-
+                </section>
+                <!-- /Hero Section -->
 
                 <!-- About Section -->
                 <section id="about" class="about section">
-
-                    <!-- Section Title -->
                     <div class="container section-title" data-aos="fade-up">
                         <h2>Quem Somos</h2>
                         <p>Conheça o Coliseu Pokémon</p>
-                    </div><!-- End Section Title -->
+                    </div>
 
                     <div class="container">
-
                         <div class="row gy-4">
-
                             <div class="col-lg-6 content" data-aos="fade-up" data-aos-delay="100">
                                 <p>
                                     O Coliseu Pokemon é um canal criado para os apaixonados pelo mundo Pokémon! Nosso
@@ -133,21 +127,15 @@
                                     <span>Inscreva-se</span>
                                     <i class="bi bi-youtube"></i>
                                 </a>
-
                             </div>
-
                         </div>
-
                     </div>
-
-                </section><!-- /About Section -->
-
+                </section>
+                <!-- /About Section -->
 
                 <!-- Features Section -->
                 <section id="features" class="features section">
-
                     <div class="container">
-
                         <ul class="nav nav-tabs row d-flex" data-aos="fade-up" data-aos-delay="100">
                             <li class="nav-item col-3">
                                 <a class="nav-link active show" data-bs-toggle="tab" data-bs-target="#features-tab-1">
@@ -173,10 +161,9 @@
                                     <h4 class="d-none d-lg-block">Dicas e Estratégias</h4>
                                 </a>
                             </li>
-                        </ul><!-- End Tab Nav -->
+                        </ul>
 
                         <div class="tab-content" data-aos="fade-up" data-aos-delay="200">
-
                             <!-- Tab 1 - Batalhas Estratégicas -->
                             <div class="tab-pane fade active show" id="features-tab-1">
                                 <div class="row">
@@ -191,11 +178,11 @@
                                                     fraquezas e resistências dos
                                                     tipos.</span></li>
                                             <li><i class="bi bi-check2-all"></i> <span>Análise de times e como compor
-                                                    equipes balanceadas.</span>
-                                            </li>
+                                                    equipes
+                                                    balanceadas.</span></li>
                                             <li><i class="bi bi-check2-all"></i> <span>Estratégias para torneios e
-                                                    batalhas competitivas.</span>
-                                            </li>
+                                                    batalhas
+                                                    competitivas.</span></li>
                                         </ul>
                                     </div>
                                     <div class="col-lg-6 order-1 order-lg-2 text-center">
@@ -203,8 +190,7 @@
                                             class="img-fluid">
                                     </div>
                                 </div>
-                            </div><!-- End Tab Content Item -->
-
+                            </div>
                             <!-- Tab 2 - Análises de Episódios -->
                             <div class="tab-pane fade" id="features-tab-2">
                                 <div class="row">
@@ -226,8 +212,7 @@
                                             class="img-fluid">
                                     </div>
                                 </div>
-                            </div><!-- End Tab Content Item -->
-
+                            </div>
                             <!-- Tab 3 - Comunidade e Torneios -->
                             <div class="tab-pane fade" id="features-tab-3">
                                 <div class="row">
@@ -248,8 +233,7 @@
                                             class="img-fluid">
                                     </div>
                                 </div>
-                            </div><!-- End Tab Content Item -->
-
+                            </div>
                             <!-- Tab 4 - Dicas e Estratégias -->
                             <div class="tab-pane fade" id="features-tab-4">
                                 <div class="row">
@@ -262,35 +246,30 @@
                                             <li><i class="bi bi-check2-all"></i> <span>Dicas de treinamento para evoluir
                                                     seu time.</span></li>
                                             <li><i class="bi bi-check2-all"></i> <span>Estratégias para maximizar a
-                                                    eficiência em batalhas.</span>
-                                            </li>
+                                                    eficiência em
+                                                    batalhas.</span></li>
                                         </ul>
                                     </div>
                                     <div class="col-lg-6 order-1 order-lg-2 text-center">
                                         <img src="/img/tips-strategies.png" alt="Dicas e Estratégias" class="img-fluid">
                                     </div>
                                 </div>
-                            </div><!-- End Tab Content Item -->
-
+                            </div>
                         </div>
 
                     </div>
-
-                </section><!-- /Features Section -->
+                </section>
+                <!-- /Features Section -->
 
                 <!-- Services Section -->
                 <section id="services" class="services section">
-
-                    <!-- Section Title -->
                     <div class="container section-title" data-aos="fade-up">
                         <h2>Sorteios</h2>
                         <p>Participe dos nossos sorteios e concorra a prêmios incríveis!</p>
-                    </div><!-- End Section Title -->
+                    </div>
 
                     <div class="container">
-
                         <div class="row gy-4">
-
                             <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
                                 <div class="service-item  position-relative">
                                     <div class="icon">
@@ -302,7 +281,7 @@
                                     <p>Concorra a cartões presente para jogos e lojas online, ideais para expandir sua
                                         coleção Pokémon!</p>
                                 </div>
-                            </div><!-- End Service Item -->
+                            </div>
 
                             <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
                                 <div class="service-item position-relative">
@@ -315,7 +294,7 @@
                                     <p>Ganhe edições dos jogos Pokémon para diversas plataformas e vivencie aventuras
                                         únicas.</p>
                                 </div>
-                            </div><!-- End Service Item -->
+                            </div>
 
                             <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
                                 <div class="service-item position-relative">
@@ -328,7 +307,7 @@
                                     <p>Participe para ganhar figuras exclusivas dos seus Pokémon favoritos e ampliar sua
                                         coleção.</p>
                                 </div>
-                            </div><!-- End Service Item -->
+                            </div>
 
                             <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
                                 <div class="service-item position-relative">
@@ -341,7 +320,7 @@
                                     <p>Concorra a acessórios temáticos de Pokémon, como bonés, camisetas e chaveiros.
                                     </p>
                                 </div>
-                            </div><!-- End Service Item -->
+                            </div>
 
                             <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
                                 <div class="service-item position-relative">
@@ -354,7 +333,7 @@
                                     <p>Tenha a chance de ganhar ingressos para eventos exclusivos de Pokémon em sua
                                         região.</p>
                                 </div>
-                            </div><!-- End Service Item -->
+                            </div>
 
                             <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
                                 <div class="service-item position-relative">
@@ -367,34 +346,30 @@
                                     <p>Participe para ganhar itens raros dentro dos jogos Pokémon e impulsione sua
                                         jornada!</p>
                                 </div>
-                            </div><!-- End Service Item -->
+                            </div>
 
                         </div>
-
                     </div>
 
-                </section><!-- /Services Section -->
+                </section>
+                <!-- /Services Section -->
 
                 <!-- Portfolio Section -->
                 <section id="portfolio" class="portfolio section">
-
-                    <!-- Section Title -->
                     <div class="container section-title" data-aos="fade-up">
                         <h2>Torneios e Competições</h2>
                         <p>Confira nossos torneios e eventos</p>
-                    </div><!-- End Section Title -->
+                    </div>
 
                     <div class="container">
-
                         <div class="isotope-layout" data-default-filter="*" data-layout="masonry"
                             data-sort="original-order">
-
                             <ul class="portfolio-filters isotope-filters" data-aos="fade-up" data-aos-delay="100">
                                 <li data-filter="*" class="filter-active">Todos</li>
                                 <li data-filter=".filter-local">Locais</li>
                                 <li data-filter=".filter-online">Online</li>
                                 <li data-filter=".filter-especial">Especiais</li>
-                            </ul><!-- End Portfolio Filters -->
+                            </ul>
 
                             <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200">
 
@@ -409,7 +384,7 @@
                                         <a href="portfolio-details.html" title="Mais Detalhes" class="details-link"><i
                                                 class="bi bi-link-45deg"></i></a>
                                     </div>
-                                </div><!-- End Torneio Item -->
+                                </div>
 
                                 <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-online">
                                     <img src="/img/masonry-portfolio/masonry-portfolio-2.jpg" class="img-fluid" alt="">
@@ -422,7 +397,7 @@
                                         <a href="portfolio-details.html" title="Mais Detalhes" class="details-link"><i
                                                 class="bi bi-link-45deg"></i></a>
                                     </div>
-                                </div><!-- End Torneio Item -->
+                                </div>
 
                                 <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-especial">
                                     <img src="/img/masonry-portfolio/masonry-portfolio-3.jpg" class="img-fluid" alt="">
@@ -435,7 +410,7 @@
                                         <a href="portfolio-details.html" title="Mais Detalhes" class="details-link"><i
                                                 class="bi bi-link-45deg"></i></a>
                                     </div>
-                                </div><!-- End Torneio Item -->
+                                </div>
 
                                 <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-local">
                                     <img src="/img/masonry-portfolio/masonry-portfolio-4.jpg" class="img-fluid" alt="">
@@ -448,7 +423,7 @@
                                         <a href="portfolio-details.html" title="Mais Detalhes" class="details-link"><i
                                                 class="bi bi-link-45deg"></i></a>
                                     </div>
-                                </div><!-- End Torneio Item -->
+                                </div>
 
                                 <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-online">
                                     <img src="/img/masonry-portfolio/masonry-portfolio-5.jpg" class="img-fluid" alt="">
@@ -461,7 +436,7 @@
                                         <a href="portfolio-details.html" title="Mais Detalhes" class="details-link"><i
                                                 class="bi bi-link-45deg"></i></a>
                                     </div>
-                                </div><!-- End Torneio Item -->
+                                </div>
 
                                 <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-especial">
                                     <img src="/img/masonry-portfolio/masonry-portfolio-6.jpg" class="img-fluid" alt="">
@@ -474,7 +449,7 @@
                                         <a href="portfolio-details.html" title="Mais Detalhes" class="details-link"><i
                                                 class="bi bi-link-45deg"></i></a>
                                     </div>
-                                </div><!-- End Torneio Item -->
+                                </div>
 
                                 <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-local">
                                     <img src="/img/masonry-portfolio/masonry-portfolio-7.jpg" class="img-fluid" alt="">
@@ -487,7 +462,7 @@
                                         <a href="portfolio-details.html" title="Mais Detalhes" class="details-link"><i
                                                 class="bi bi-link-45deg"></i></a>
                                     </div>
-                                </div><!-- End Torneio Item -->
+                                </div>
 
                                 <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-online">
                                     <img src="/img/masonry-portfolio/masonry-portfolio-8.jpg" class="img-fluid" alt="">
@@ -500,7 +475,7 @@
                                         <a href="portfolio-details.html" title="Mais Detalhes" class="details-link"><i
                                                 class="bi bi-link-45deg"></i></a>
                                     </div>
-                                </div><!-- End Torneio Item -->
+                                </div>
 
                                 <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-especial">
                                     <img src="/img/masonry-portfolio/masonry-portfolio-9.jpg" class="img-fluid" alt="">
@@ -513,28 +488,24 @@
                                         <a href="portfolio-details.html" title="Mais Detalhes" class="details-link"><i
                                                 class="bi bi-link-45deg"></i></a>
                                     </div>
-                                </div><!-- End Torneio Item -->
+                                </div>
 
                             </div>
-
                         </div>
-
-                </section><!-- /Portfolio Section -->
+                    </div>
+                </section>
+                <!-- /Portfolio Section -->
 
                 <!-- Apoio Section -->
                 <!-- Pricing Section -->
                 <section id="pricing" class="pricing section">
-
-                    <!-- Section Title -->
                     <div class="container section-title" data-aos="fade-up">
                         <h2>Apoie o Coliseu</h2>
                         <p>Escolha seu nível de apoio e ajude a fortalecer nossa comunidade Pokémon!</p>
-                    </div><!-- End Section Title -->
+                    </div>
 
                     <div class="container">
-
                         <div class="row gy-3">
-
                             <div class="col-xl-3 col-lg-6" data-aos="fade-up" data-aos-delay="100">
                                 <div class="pricing-item">
                                     <h3>Gladiador Novato</h3>
@@ -550,7 +521,7 @@
                                         <a href="#" class="btn-buy">Apoiar Agora</a>
                                     </div>
                                 </div>
-                            </div><!-- End Apoio Item -->
+                            </div>
 
                             <div class="col-xl-3 col-lg-6" data-aos="fade-up" data-aos-delay="200">
                                 <div class="pricing-item featured">
@@ -567,7 +538,7 @@
                                         <a href="#" class="btn-buy">Apoiar Agora</a>
                                     </div>
                                 </div>
-                            </div><!-- End Apoio Item -->
+                            </div>
 
                             <div class="col-xl-3 col-lg-6" data-aos="fade-up" data-aos-delay="400">
                                 <div class="pricing-item">
@@ -584,7 +555,7 @@
                                         <a href="#" class="btn-buy">Apoiar Agora</a>
                                     </div>
                                 </div>
-                            </div><!-- End Apoio Item -->
+                            </div>
 
                             <div class="col-xl-3 col-lg-6" data-aos="fade-up" data-aos-delay="400">
                                 <div class="pricing-item">
@@ -602,22 +573,18 @@
                                         <a href="#" class="btn-buy">Apoiar Agora</a>
                                     </div>
                                 </div>
-                            </div><!-- End Apoio Item -->
-
+                            </div>
                         </div>
-
                     </div>
-
-                </section><!-- /Pricing Section -->
+                </section>
+                <!-- /Pricing Section -->
 
                 <!-- Recent Posts Section -->
                 <section id="recent-posts" class="recent-posts section">
-
-                    <!-- Section Title -->
                     <div class="container section-title" data-aos="fade-up">
                         <h2>Últimas Notícias</h2>
                         <p>Fique por dentro das novidades do mundo Pokémon</p>
-                    </div><!-- End Section Title -->
+                    </div>
 
                     <div class="container">
                         <div class="row gy-4">
@@ -639,8 +606,9 @@
                                                 </a>
                                             </h2>
                                             <div class="d-flex align-items-center">
-                                                <img src="/img/blog/blog-author.jpg" alt="Autor"
-                                                    class="img-fluid post-author-img flex-shrink-0">
+                                                <img src="<%= post.authorPic ? post.authorPic : '/img/blog/blog-author.jpg' %>"
+                                                    alt="Autor" class="img-fluid post-author-img flex-shrink-0"
+                                                    style="width:50px; height:50px; object-fit:cover; border-radius:50%;">
                                                 <div class="post-meta">
                                                     <p class="post-author">
                                                         <%= post.authorName %>
@@ -650,6 +618,12 @@
                                                             <%= new Date(post.created_at).toLocaleDateString('pt-BR') %>
                                                         </time>
                                                     </p>
+                                                    <!-- Exibindo breve biography se quiser -->
+                                                    <% if (post.authorBio) { %>
+                                                        <p style="font-size: 14px; margin-top: 5px; color: #666;">
+                                                            <%= post.authorBio %>
+                                                        </p>
+                                                        <% } %>
                                                 </div>
                                             </div>
                                         </article>
@@ -661,21 +635,18 @@
                         </div>
                     </div>
 
-                </section><!-- /Recent Posts Section -->
+                </section>
+                <!-- /Recent Posts Section -->
 
                 <!-- Contact Section -->
                 <section id="contact" class="contact section">
-
-                    <!-- Section Title -->
                     <div class="container section-title" data-aos="fade-up">
                         <h2>Contato</h2>
                         <p>Entre em contato com o Coliseu Pokémon</p>
-                    </div><!-- End Section Title -->
+                    </div>
 
                     <div class="container" data-aos="fade" data-aos-delay="100">
-
                         <div class="row gy-4">
-
                             <div class="col-lg-4">
                                 <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="200">
                                     <i class="bi bi-geo-alt flex-shrink-0"></i>
@@ -683,68 +654,57 @@
                                         <h3>Endereço</h3>
                                         <p>Avenida Pallet, 151, Cidade de Pallet, Mundo Pokémon</p>
                                     </div>
-                                </div><!-- End Info Item -->
-
+                                </div>
                                 <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="300">
                                     <i class="bi bi-telephone flex-shrink-0"></i>
                                     <div>
                                         <h3>Telefone</h3>
                                         <p>+55 21 99999-9999</p>
                                     </div>
-                                </div><!-- End Info Item -->
-
+                                </div>
                                 <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="400">
                                     <i class="bi bi-envelope flex-shrink-0"></i>
                                     <div>
                                         <h3>Email</h3>
                                         <p>contato@coliseupokemon.com</p>
                                     </div>
-                                </div><!-- End Info Item -->
-
+                                </div>
                             </div>
 
                             <div class="col-lg-8">
                                 <form action="forms/contact.php" method="post" class="php-email-form" data-aos="fade-up"
                                     data-aos-delay="200">
                                     <div class="row gy-4">
-
                                         <div class="col-md-6">
                                             <input type="text" name="name" class="form-control" placeholder="Seu Nome"
-                                                required="">
+                                                required>
                                         </div>
-
                                         <div class="col-md-6">
                                             <input type="email" class="form-control" name="email"
-                                                placeholder="Seu Email" required="">
+                                                placeholder="Seu Email" required>
                                         </div>
-
                                         <div class="col-md-12">
                                             <input type="text" class="form-control" name="subject" placeholder="Assunto"
-                                                required="">
+                                                required>
                                         </div>
-
                                         <div class="col-md-12">
                                             <textarea class="form-control" name="message" rows="6"
-                                                placeholder="Mensagem" required=""></textarea>
+                                                placeholder="Mensagem" required></textarea>
                                         </div>
-
                                         <div class="col-md-12 text-center">
                                             <div class="loading">Carregando</div>
                                             <div class="error-message"></div>
                                             <div class="sent-message">Sua mensagem foi enviada. Obrigado!</div>
-
                                             <button type="submit">Enviar Mensagem</button>
                                         </div>
-
                                     </div>
                                 </form>
-                            </div><!-- End Contact Form -->
-
+                            </div>
+                            <!-- End Contact Form -->
                         </div>
-
                     </div>
-
-                </section><!-- /Contact Section -->
+                </section>
+                <!-- /Contact Section -->
 
             </main>
 

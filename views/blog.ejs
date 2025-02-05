@@ -11,7 +11,6 @@
         <%- include('partials/header', { activePage: 'blog' }) %>
 
             <main class="main">
-
                 <!-- Page Title -->
                 <div class="page-title dark-background">
                     <div class="container position-relative">
@@ -31,10 +30,8 @@
                 <section id="blog-posts" class="blog-posts section">
                     <div class="container">
                         <div class="row gy-4">
-
                             <% if (posts && posts.length> 0) {
                                 posts.forEach((post) => { %>
-
                                 <div class="col-lg-4">
                                     <article>
                                         <div class="post-img">
@@ -47,62 +44,60 @@
                                                     <% } %>
                                         </div>
 
-                                        <!-- Exemplo simples de 'post-category' usando a 1ª tag (se existir) -->
                                         <% let postCategory='Outros' ; %>
                                             <% if (post.tags) { let tagsArr=post.tags.split(',').map(t=>
                                                 t.trim()).filter(t => t);
                                                 if (tagsArr.length > 0) {
                                                 postCategory = tagsArr[0];
                                                 }
-                                                }
-                                                %>
+                                                } %>
                                                 <p class="post-category">
                                                     <%= postCategory %>
                                                 </p>
 
                                                 <h2 class="title">
-                                                    <!-- Link hipotético para blog-details com ID da postagem (não implementado) -->
                                                     <a href="/blog-details/<%= post.id %>">
                                                         <%= post.title %>
                                                     </a>
                                                 </h2>
 
                                                 <div class="d-flex align-items-center">
-                                                    <!-- Exemplo de placeholder de autor -->
-                                                    <img src="/img/blog/blog-author.jpg" alt="Autor"
-                                                        class="img-fluid post-author-img flex-shrink-0">
+                                                    <img src="<%= post.authorPic ? post.authorPic : '/img/blog/blog-author.jpg' %>"
+                                                        alt="Autor" class="img-fluid post-author-img flex-shrink-0"
+                                                        style="width:50px; height:50px; object-fit:cover; border-radius:50%;">
                                                     <div class="post-meta">
                                                         <p class="post-author">
                                                             <%= post.authorName || 'Autor Desconhecido' %>
                                                         </p>
                                                         <p class="post-date">
                                                             <time datetime="<%= post.created_at %>">
-                                                                <!-- Exemplo de formatação de data simplificada -->
                                                                 <%= new
                                                                     Date(post.created_at).toLocaleDateString('pt-BR') %>
                                                             </time>
                                                         </p>
+
+                                                        <% if (post.authorBio) { %>
+                                                            <p style="font-size: 14px; margin-top: 5px; color: #666;">
+                                                                <%= post.authorBio %>
+                                                            </p>
+                                                            <% } %>
                                                     </div>
                                                 </div>
                                     </article>
-                                </div><!-- End post list item -->
-
+                                </div>
                                 <% }); } else { %>
                                     <p class="text-center">Nenhuma postagem publicada foi encontrada.</p>
                                     <% } %>
-
                         </div>
                     </div>
                 </section>
                 <!-- /Blog Posts Section -->
 
                 <!-- Blog Pagination Section (Opcional) -->
-                <!-- Caso queira implementar paginação real, será necessário mais lógica no backend -->
                 <section id="blog-pagination" class="blog-pagination section">
                     <div class="container">
                         <div class="d-flex justify-content-center">
                             <ul>
-                                <!-- Exemplo de paginação estática ou sem funcionalidade -->
                                 <li><a href="#"><i class="bi bi-chevron-left"></i></a></li>
                                 <li><a href="#" class="active">1</a></li>
                                 <li><a href="#"><i class="bi bi-chevron-right"></i></a></li>
@@ -111,7 +106,6 @@
                     </div>
                 </section>
                 <!-- /Blog Pagination Section -->
-
             </main>
 
             <!-- Footer -->

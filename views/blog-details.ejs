@@ -2,188 +2,184 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 
-<%- include('partials/head', {
-  pageTitle: post ? post.title : 'Detalhes do Post - Coliseu Pokémon',
-  pageDescription: 'Detalhes do post selecionado no Coliseu Pokémon',
-  pageKeywords: 'pokémon, blog, coliseu, detalhes'
-}) %>
+<%- include('partials/head', { pageTitle: post ? post.title : 'Detalhes do Post - Coliseu Pokémon' ,
+  pageDescription: 'Detalhes do post selecionado no Coliseu Pokémon' , pageKeywords: 'pokémon, blog, coliseu, detalhes'
+  }) %>
 
-<body>
-  <!-- Header -->
-  <%- include('partials/header', { activePage: 'blog' }) %>
+  <body>
+    <!-- Header -->
+    <%- include('partials/header', { activePage: 'blog' }) %>
 
-  <main class="main">
+      <main class="main">
 
-    <!-- Page Title -->
-    <div class="page-title dark-background">
-      <div class="container position-relative">
-        <h1><%= post ? post.title : 'Post Inexistente' %></h1>
-        <p>Acompanhe os detalhes deste post no Coliseu Pokémon!</p>
-        <nav class="breadcrumbs">
-          <ol>
-            <li><a href="/">Início</a></li>
-            <li><a href="/blog">Blog</a></li>
-            <li class="current">Detalhes</li>
-          </ol>
-        </nav>
-      </div>
-    </div><!-- End Page Title -->
-
-    <div class="container mt-4">
-      <div class="row">
-
-        <!-- Se o post existir, exibe; caso contrário, mensagem de erro -->
-        <% if (!post) { %>
-          <div class="col-12 text-center">
-            <h2>Post não encontrado ou indisponível.</h2>
+        <!-- Page Title -->
+        <div class="page-title dark-background">
+          <div class="container position-relative">
+            <h1>
+              <%= post ? post.title : 'Post Inexistente' %>
+            </h1>
+            <p>Acompanhe os detalhes deste post no Coliseu Pokémon!</p>
+            <nav class="breadcrumbs">
+              <ol>
+                <li><a href="/">Início</a></li>
+                <li><a href="/blog">Blog</a></li>
+                <li class="current">Detalhes</li>
+              </ol>
+            </nav>
           </div>
-        <% } else { %>
+        </div>
+        <!-- End Page Title -->
 
-          <div class="col-lg-8">
-
-            <!-- Blog Details Section -->
-            <section id="blog-details" class="blog-details section">
-              <div class="container">
-
-                <article class="article">
-
-                  <!-- Imagem de Capa -->
-                  <div class="post-img mb-3">
-                    <% if (post.featured_image && post.featured_image.trim() !== '') { %>
-                      <img src="<%= post.featured_image %>" alt="Imagem de Capa" class="img-fluid">
-                    <% } else { %>
-                      <img src="/img/blog/blog-default.jpg" alt="Capa Padrão" class="img-fluid">
-                    <% } %>
-                  </div>
-
-                  <!-- Título do Post -->
-                  <h2 class="title"><%= post.title %></h2>
-
-                  <!-- Metadados do Post -->
-                  <div class="meta-top mb-3">
-                    <ul>
-                      <li class="d-flex align-items-center">
-                        <i class="bi bi-person"></i>
-                        <a><%= post.authorName || 'Autor Desconhecido' %></a>
-                      </li>
-                      <li class="d-flex align-items-center">
-                        <i class="bi bi-clock"></i>
-                        <a>
-                          <time datetime="<%= post.created_at %>">
-                            <%= new Date(post.created_at).toLocaleDateString('pt-BR') %>
-                          </time>
-                        </a>
-                      </li>
-                      <li class="d-flex align-items-center">
-                        <i class="bi bi-chat-dots"></i>
-                        <!-- No momento, sem sistema de comentários -->
-                        <a>0 Comentários</a>
-                      </li>
-                    </ul>
-                  </div>
-                  <!-- /meta-top -->
-
-                  <!-- Conteúdo do Post -->
-                  <div class="content">
-                    <!-- Como armazenamos no BD em HTML com CKEditor, podemos exibir "raw" com EJS: -->
-                    <%- post.content %>
-                  </div>
-                  <!-- /content -->
-
-                  <!-- Informações de Categoria/Tags -->
-                  <div class="meta-bottom d-flex align-items-center justify-content-between mt-4">
-                    <div>
-                      <i class="bi bi-folder"></i>
-                      <ul class="cats d-inline">
-                        <li><%= post.franchise_type || 'Pokémon' %></li>
-                      </ul>
-
-                      <i class="bi bi-tags ms-3"></i>
-                      <ul class="tags d-inline">
-                        <% const postTags = (post.tags || '').split(',').map(t => t.trim()).filter(t => t); %>
-                        <% if (postTags && postTags.length) { %>
-                          <% postTags.forEach((tg, idx) => { %>
-                            <li><%= tg %></li>
-                          <% }) %>
-                        <% } else { %>
-                          <li>Sem tags</li>
-                        <% } %>
-                      </ul>
-                    </div>
-                    <% if (post.franchise_detail && post.franchise_detail.trim() !== '') { %>
-                      <small style="color:var(--accent-color); font-weight:600;">
-                        <%= post.franchise_detail %>
-                      </small>
-                    <% } %>
-                  </div>
-                  <!-- /meta-bottom -->
-
-                  <!-- Caso queira exibir galeria de imagens -->
-                  <% if (post.images && post.images.trim() !== '') { %>
-                    <div class="gallery mt-4 d-flex flex-wrap">
-                      <% post.images.split(',').forEach(imgUrl => { 
-                        const trimmedUrl = imgUrl.trim();
-                        if (trimmedUrl) { %>
-                          <img src="<%= trimmedUrl %>" alt="Galeria" class="img-thumbnail me-2 mb-2" style="max-width:150px;">
-                      <% } }) %>
-                    </div>
-                  <% } %>
-
-                </article>
+        <div class="container mt-4">
+          <div class="row">
+            <% if (!post) { %>
+              <div class="col-12 text-center">
+                <h2>Post não encontrado ou indisponível.</h2>
               </div>
-            </section><!-- /Blog Details Section -->
+              <% } else { %>
+                <div class="col-lg-8">
+                  <section id="blog-details" class="blog-details section">
+                    <div class="container">
+                      <article class="article">
+                        <div class="post-img mb-3">
+                          <% if (post.featured_image && post.featured_image.trim() !=='' ) { %>
+                            <img src="<%= post.featured_image %>" alt="Imagem de Capa" class="img-fluid">
+                            <% } else { %>
+                              <img src="/img/blog/blog-default.jpg" alt="Capa Padrão" class="img-fluid">
+                              <% } %>
+                        </div>
 
-            <!-- TODO: Se desejar, adicionar secção de comentários aqui -->
+                        <h2 class="title">
+                          <%= post.title %>
+                        </h2>
 
-          </div><!-- /col-lg-8 -->
+                        <div class="meta-top mb-3">
+                          <ul>
+                            <li class="d-flex align-items-center">
+                              <i class="bi bi-person"></i>
+                              <a>
+                                <%= post.authorName || 'Autor Desconhecido' %>
+                              </a>
+                            </li>
+                            <li class="d-flex align-items-center">
+                              <i class="bi bi-clock"></i>
+                              <a>
+                                <time datetime="<%= post.created_at %>">
+                                  <%= new Date(post.created_at).toLocaleDateString('pt-BR') %>
+                                </time>
+                              </a>
+                            </li>
+                            <li class="d-flex align-items-center">
+                              <i class="bi bi-chat-dots"></i>
+                              <a>0 Comentários</a>
+                            </li>
+                          </ul>
+                        </div>
 
-          <!-- Sidebar -->
-          <div class="col-lg-4 sidebar">
-            <div class="widgets-container">
+                        <div class="content">
+                          <%- post.content %>
+                        </div>
 
-              <!-- Autor -->
-              <div class="blog-author-widget widget-item">
-                <div class="d-flex flex-column align-items-center">
-                  <!-- Caso queira armazenar foto do autor -->
-                  <img src="/img/blog/blog-author.jpg" class="rounded-circle flex-shrink-0" alt="Autor">
-                  <h4><%= post.authorName || 'Autor Desconhecido' %></h4>
-                  <div class="social-links">
-                    <a href="#"><i class="bi bi-twitter"></i></a>
-                    <a href="#"><i class="bi bi-facebook"></i></a>
-                    <a href="#"><i class="bi bi-instagram"></i></a>
-                  </div>
-                  <p style="text-align:center; font-style:italic;">
-                    Esta postagem foi criada para nossa comunidade Pokémon!
-                  </p>
+                        <div class="meta-bottom d-flex align-items-center justify-content-between mt-4">
+                          <div>
+                            <i class="bi bi-folder"></i>
+                            <ul class="cats d-inline">
+                              <li>
+                                <%= post.franchise_type || 'Pokémon' %>
+                              </li>
+                            </ul>
+
+                            <i class="bi bi-tags ms-3"></i>
+                            <ul class="tags d-inline">
+                              <% const postTags=(post.tags || '' ).split(',').map(t=> t.trim()).filter(t => t); %>
+                                <% if (postTags && postTags.length) { %>
+                                  <% postTags.forEach((tg)=> { %>
+                                    <li>
+                                      <%= tg %>
+                                    </li>
+                                    <% }) %>
+                                      <% } else { %>
+                                        <li>Sem tags</li>
+                                        <% } %>
+                            </ul>
+                          </div>
+                          <% if (post.franchise_detail && post.franchise_detail.trim() !=='' ) { %>
+                            <small style="color:var(--accent-color); font-weight:600;">
+                              <%= post.franchise_detail %>
+                            </small>
+                            <% } %>
+                        </div>
+
+                        <% if (post.images && post.images.trim() !=='' ) { %>
+                          <div class="gallery mt-4 d-flex flex-wrap">
+                            <% post.images.split(',').forEach(imgUrl=> {
+                              const trimmedUrl = imgUrl.trim();
+                              if (trimmedUrl) { %>
+                              <img src="<%= trimmedUrl %>" alt="Galeria" class="img-thumbnail me-2 mb-2"
+                                style="max-width:150px;">
+                              <% } }) %>
+                          </div>
+                          <% } %>
+                      </article>
+                    </div>
+                  </section>
                 </div>
-              </div><!-- /blog-author-widget -->
 
-              <!-- Caso queira adicionar mais widgets (recent posts, tags, etc.) -->
-              <!-- ... -->
+                <div class="col-lg-4 sidebar">
+                  <div class="widgets-container">
+                    <div class="blog-author-widget widget-item d-flex flex-column align-items-center">
+                      <img src="<%= post.authorPic ? post.authorPic : '/img/blog/blog-author.jpg' %>"
+                        class="rounded-circle flex-shrink-0" alt="Autor"
+                        style="width:100px; height:100px; object-fit:cover; margin-bottom:10px;">
+                      <h4>
+                        <%= post.authorName || 'Autor Desconhecido' %>
+                      </h4>
 
-            </div>
-          </div><!-- /sidebar -->
+                      <% if (post.authorBio) { %>
+                        <p style="text-align:center; font-style:italic; margin-top:5px;">
+                          <%= post.authorBio %>
+                        </p>
+                        <% } else { %>
+                          <p style="text-align:center; font-style:italic; margin-top:5px;">
+                            Esta postagem foi criada para nossa comunidade Pokémon!
+                          </p>
+                          <% } %>
 
-        <% } %>
-      </div>
-    </div>
+                            <div class="social-links">
+                              <% if (post.authorFacebook) { %>
+                                <a href="<%= post.authorFacebook %>" target="_blank"><i class="bi bi-facebook"></i></a>
+                                <% } %>
+                                  <% if (post.authorInstagram) { %>
+                                    <a href="<%= post.authorInstagram %>" target="_blank"><i
+                                        class="bi bi-instagram"></i></a>
+                                    <% } %>
+                                      <% if (post.authorXProfile) { %>
+                                        <a href="<%= post.authorXProfile %>" target="_blank"><i
+                                            class="bi bi-twitter"></i></a>
+                                        <% } %>
+                            </div>
+                    </div>
+                    <!-- Adicione outros widgets se necessário -->
+                  </div>
+                </div>
+                <% } %>
+          </div>
+        </div>
+      </main>
 
-  </main>
+      <!-- Footer -->
+      <%- include('partials/footer') %>
 
-  <!-- Footer -->
-  <%- include('partials/footer') %>
+        <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="/vendor/php-email-form/validate.js"></script>
+        <script src="/vendor/aos/aos.js"></script>
+        <script src="/vendor/glightbox/js/glightbox.min.js"></script>
+        <script src="/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
+        <script src="/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+        <script src="/vendor/swiper/swiper-bundle.min.js"></script>
 
-  <!-- Scripts JS -->
-  <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="/vendor/php-email-form/validate.js"></script>
-  <script src="/vendor/aos/aos.js"></script>
-  <script src="/vendor/glightbox/js/glightbox.min.js"></script>
-  <script src="/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
-  <script src="/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-  <script src="/vendor/swiper/swiper-bundle.min.js"></script>
+        <!-- Main JS File -->
+        <script src="/js/main.js"></script>
+  </body>
 
-  <!-- Main JS File -->
-  <script src="/js/main.js"></script>
-
-</body>
 </html>
