@@ -6,10 +6,10 @@ const bcrypt = require("bcrypt");
 const session = require("express-session");
 const multer = require("multer");
 
-// Configurações de upload (limite de 2MB e apenas imagens)
+// Upload Config
 const upload = multer({
     dest: path.join(__dirname, "public", "uploads"),
-    limits: { fileSize: 2 * 1024 * 1024 }, // 2MB
+    limits: { fileSize: 2 * 1024 * 1024 },
     fileFilter: (req, file, cb) => {
         if (!file.mimetype.startsWith("image/")) {
             return cb(new Error("Apenas arquivos de imagem são permitidos!"));
@@ -21,7 +21,7 @@ const upload = multer({
 const app = express();
 const PORT = 3000;
 
-// Conexão SQLite
+// DB
 const db = new sqlite3.Database("./db/database.db", (err) => {
     if (err) {
         console.error("Erro ao conectar ao banco de dados:", err.message);
@@ -30,6 +30,7 @@ const db = new sqlite3.Database("./db/database.db", (err) => {
     }
 });
 
+// Tabelas
 db.run(`
   CREATE TABLE IF NOT EXISTS posts (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -63,6 +64,19 @@ db.run(`
   )
 `);
 
+// Nova tabela: comments
+db.run(`
+  CREATE TABLE IF NOT EXISTS comments (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      postId INTEGER NOT NULL,
+      userName TEXT NOT NULL,
+      content TEXT NOT NULL,
+      parentId INTEGER DEFAULT NULL,
+      likes INTEGER DEFAULT 0,
+      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+  )
+`);
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
@@ -82,7 +96,6 @@ function isAuthenticated(req, res, next) {
     if (req.session.user) return next();
     return res.redirect("/auth");
 }
-
 function hasRole(role) {
     return (req, res, next) => {
         if (!req.session.user) return res.redirect("/auth");
@@ -90,6 +103,17 @@ function hasRole(role) {
         if (userRoles.includes(role) || userRoles.includes("Master")) return next();
         return res.status(403).send("Acesso negado.");
     };
+}
+
+// Filtro básico de palavras ofensivas (exemplo simples)
+function filterBadWords(text) {
+    const badWords = ["xxx", "palavrão", "ofensa"]; // Exemplo
+    let filtered = text;
+    badWords.forEach((bw) => {
+        const regex = new RegExp(bw, "gi");
+        filtered = filtered.replace(regex, "***");
+    });
+    return filtered;
 }
 
 // Página inicial
@@ -120,12 +144,11 @@ app.get("/", (req, res) => {
     });
 });
 
-// Auth
 app.get("/auth", (req, res) => {
     res.render("auth");
 });
 
-// Página de perfil
+// Perfil
 app.get("/profile", isAuthenticated, (req, res) => {
     const userId = req.session.user.id;
     const sql = `
@@ -136,8 +159,8 @@ app.get("/profile", isAuthenticated, (req, res) => {
   `;
     db.get(sql, [userId], (err, userRow) => {
         if (err) {
-            console.error("Erro ao buscar dados de perfil:", err.message);
-            return res.status(500).send("Erro ao carregar o perfil.");
+            console.error("Erro ao buscar perfil:", err.message);
+            return res.status(500).send("Erro ao carregar perfil.");
         }
         if (!userRow) {
             return res.status(404).send("Usuário não encontrado.");
@@ -149,32 +172,20 @@ app.get("/profile", isAuthenticated, (req, res) => {
     });
 });
 
-// Atualização do perfil (com upload de arquivo)
 app.post("/profile", isAuthenticated, upload.single("profile_pic"), (req, res) => {
     const userId = req.session.user.id;
-    const {
-        name,
-        biography,
-        facebook,
-        instagram,
-        x_profile,
-    } = req.body;
-
+    const { name, biography, facebook, instagram, x_profile } = req.body;
     let newProfilePic = null;
     if (req.file) {
         newProfilePic = "/uploads/" + req.file.filename;
     }
-
-    // Se não subiu novo arquivo, mantém o antigo (opcional)
     const getOldPicSql = "SELECT profile_pic FROM users WHERE id = ?";
     db.get(getOldPicSql, [userId], (err, row) => {
         if (err) {
             console.error("Erro ao buscar foto antiga:", err.message);
             return res.status(500).send("Erro ao atualizar perfil.");
         }
-
         const finalProfilePic = newProfilePic ? newProfilePic : row.profile_pic;
-
         const sql = `
       UPDATE users
       SET name = ?,
@@ -217,7 +228,7 @@ app.get("/blog", (req, res) => {
   `;
     db.all(sqlPublishedPosts, [], (err, publishedPosts) => {
         if (err) {
-            console.error("Erro ao buscar postagens publicadas:", err.message);
+            console.error("Erro ao buscar postagens:", err.message);
             return res.status(500).send("Erro ao carregar postagens publicadas.");
         }
         return res.render("blog", {
@@ -227,6 +238,7 @@ app.get("/blog", (req, res) => {
     });
 });
 
+// Detalhes do Post + Comentários
 app.get("/blog-details/:id", (req, res) => {
     const { id } = req.params;
     const sqlDetails = `
@@ -247,9 +259,86 @@ app.get("/blog-details/:id", (req, res) => {
             console.error("Erro ao buscar postagem:", err.message);
             return res.status(500).send("Erro ao carregar detalhes da postagem.");
         }
-        return res.render("blog-details", {
-            user: req.session.user || null,
-            post: postRow || null,
+        if (!postRow) {
+            return res.render("blog-details", { user: req.session.user || null, post: null });
+        }
+        const sqlComments = `
+      SELECT * FROM comments
+      WHERE postId = ?
+      ORDER BY createdAt ASC
+    `;
+        db.all(sqlComments, [id], (err2, comments) => {
+            if (err2) {
+                console.error("Erro ao buscar comentários:", err2.message);
+                return res.status(500).send("Erro ao carregar comentários.");
+            }
+            return res.render("blog-details", {
+                user: req.session.user || null,
+                post: postRow,
+                comments: comments || [],
+            });
+        });
+    });
+});
+
+// Comentar
+app.post("/blog-details/:id/comment", (req, res) => {
+    const { id } = req.params;
+    let { userName, content } = req.body;
+    userName = filterBadWords(userName.trim());
+    content = filterBadWords(content.trim());
+    db.run(
+        `INSERT INTO comments (postId, userName, content, parentId, likes) VALUES (?, ?, ?, ?, ?)`,
+        [id, userName, content, null, 0],
+        function (err) {
+            if (err) {
+                console.error("Erro ao inserir comentário:", err.message);
+                return res.status(500).send("Erro ao inserir comentário.");
+            }
+            return res.redirect("/blog-details/" + id);
+        }
+    );
+});
+
+// Responder Comentário
+app.post("/blog-details/:id/reply", (req, res) => {
+    const { id } = req.params;
+    let { userName, content, parentId } = req.body;
+    userName = filterBadWords(userName.trim());
+    content = filterBadWords(content.trim());
+    db.run(
+        `INSERT INTO comments (postId, userName, content, parentId, likes) VALUES (?, ?, ?, ?, ?)`,
+        [id, userName, content, parentId, 0],
+        function (err) {
+            if (err) {
+                console.error("Erro ao inserir resposta:", err.message);
+                return res.status(500).send("Erro ao inserir resposta.");
+            }
+            return res.redirect("/blog-details/" + id);
+        }
+    );
+});
+
+// Curtir Comentário
+app.post("/blog-details/:id/like", (req, res) => {
+    const { id } = req.params;
+    const { commentId } = req.body;
+    const sqlGetLikes = `SELECT likes FROM comments WHERE id = ?`;
+    db.get(sqlGetLikes, [commentId], (err, row) => {
+        if (err) {
+            console.error("Erro ao buscar likes:", err.message);
+            return res.status(500).send("Erro ao buscar likes do comentário.");
+        }
+        if (!row) {
+            return res.status(404).send("Comentário não encontrado.");
+        }
+        const newLikes = row.likes + 1;
+        db.run(`UPDATE comments SET likes = ? WHERE id = ?`, [newLikes, commentId], function (err2) {
+            if (err2) {
+                console.error("Erro ao curtir comentário:", err2.message);
+                return res.status(500).send("Erro ao curtir comentário.");
+            }
+            return res.redirect("/blog-details/" + id);
         });
     });
 });
@@ -332,7 +421,7 @@ app.post("/login", (req, res) => {
     });
 });
 
-// Escolher painel se múltiplas roles
+// Escolher painel
 app.get("/choose-role", isAuthenticated, (req, res) => {
     const adminGroup = ["Master", "Admin", "Moderador"];
     const writerGroup = ["Escritor"];
@@ -684,17 +773,17 @@ app.post("/dashboard/writer/delete-post", isAuthenticated, hasRole("Escritor"), 
 // Revisor
 app.get("/dashboard/revisor", isAuthenticated, hasRole("Revisor"), (req, res) => {
     const sql = `
-      SELECT p.*,
-             u.name AS authorName,
-             u.profile_pic AS authorPic,
-             u.biography AS authorBio,
-             u.facebook AS authorFacebook,
-             u.instagram AS authorInstagram,
-             u.x_profile AS authorXProfile
-      FROM posts p
-      JOIN users u ON p.authorId = u.id
-      WHERE p.status = 'pendente'
-      ORDER BY p.created_at DESC
+    SELECT p.*,
+           u.name AS authorName,
+           u.profile_pic AS authorPic,
+           u.biography AS authorBio,
+           u.facebook AS authorFacebook,
+           u.instagram AS authorInstagram,
+           u.x_profile AS authorXProfile
+    FROM posts p
+    JOIN users u ON p.authorId = u.id
+    WHERE p.status = 'pendente'
+    ORDER BY p.created_at DESC
   `;
     db.all(sql, [], (err, postRows) => {
         if (err) {

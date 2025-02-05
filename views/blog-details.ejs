@@ -7,12 +7,9 @@
   }) %>
 
   <body>
-    <!-- Header -->
     <%- include('partials/header', { activePage: 'blog' }) %>
 
       <main class="main">
-
-        <!-- Page Title -->
         <div class="page-title dark-background">
           <div class="container position-relative">
             <h1>
@@ -28,15 +25,16 @@
             </nav>
           </div>
         </div>
-        <!-- End Page Title -->
 
         <div class="container mt-4">
           <div class="row">
+
             <% if (!post) { %>
               <div class="col-12 text-center">
                 <h2>Post não encontrado ou indisponível.</h2>
               </div>
               <% } else { %>
+
                 <div class="col-lg-8">
                   <section id="blog-details" class="blog-details section">
                     <div class="container">
@@ -71,7 +69,9 @@
                             </li>
                             <li class="d-flex align-items-center">
                               <i class="bi bi-chat-dots"></i>
-                              <a>0 Comentários</a>
+                              <a>
+                                <%= comments && comments.length ? comments.length : 0 %> Comentários
+                              </a>
                             </li>
                           </ul>
                         </div>
@@ -103,6 +103,7 @@
                                         <% } %>
                             </ul>
                           </div>
+
                           <% if (post.franchise_detail && post.franchise_detail.trim() !=='' ) { %>
                             <small style="color:var(--accent-color); font-weight:600;">
                               <%= post.franchise_detail %>
@@ -123,8 +124,90 @@
                       </article>
                     </div>
                   </section>
+
+                  <!-- Comentários -->
+                  <section class="comments-section mt-5">
+                    <div class="container">
+                      <h4>
+                        <%= comments && comments.length ? comments.length : 0 %> Comentários
+                      </h4>
+                      <hr>
+
+                      <% if (comments && comments.length> 0) {
+                        function renderComments(list, parentId = null, level = 0) {
+                        list.forEach(com => {
+                        if (com.parentId === parentId) {
+                        let indentStyle = level > 0 ? 'margin-left:' + (level*30) + 'px;' : '';
+                        %>
+                        <div style="<%= indentStyle %> margin-bottom:15px;">
+                          <div style="border:1px solid #ddd; padding:10px; border-radius:5px;">
+                            <strong>
+                              <%= com.userName %>
+                            </strong>
+                            <span style="font-size:13px; color:#777; margin-left:10px;">
+                              <%= new Date(com.createdAt).toLocaleString('pt-BR') %>
+                            </span>
+                            <p style="margin-top:5px;">
+                              <%= com.content %>
+                            </p>
+                            <form action="/blog-details/<%= post.id %>/like" method="POST" style="display:inline;">
+                              <input type="hidden" name="commentId" value="<%= com.id %>" />
+                              <button type="submit" class="btn btn-sm btn-link" style="color:#ef6603; padding:0;">
+                                Curtir (<%= com.likes %>)
+                              </button>
+                            </form>
+                            <button class="btn btn-sm btn-secondary"
+                              onclick="document.getElementById('reply-form-<%= com.id %>').style.display='block';"
+                              style="margin-left:10px;">
+                              Responder
+                            </button>
+                            <div id="reply-form-<%= com.id %>" style="display:none; margin-top:10px;">
+                              <form action="/blog-details/<%= post.id %>/reply" method="POST">
+                                <input type="hidden" name="parentId" value="<%= com.id %>">
+                                <div class="mb-2">
+                                  <input type="text" name="userName" class="form-control" placeholder="Seu Nome"
+                                    required>
+                                </div>
+                                <div class="mb-2">
+                                  <textarea name="content" class="form-control" rows="2" placeholder="Sua resposta..."
+                                    required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm">Enviar Resposta</button>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+
+                        <% let children=list.filter(x=> x.parentId === com.id);
+                          if (children.length > 0) {
+                          renderComments(list, com.id, level+1);
+                          }
+                          }
+                          });
+                          }
+                          renderComments(comments);
+                          } %>
+
+                          <!-- Novo Comentário -->
+                          <div class="mt-4">
+                            <h5>Deixe seu comentário</h5>
+                            <form action="/blog-details/<%= post.id %>/comment" method="POST">
+                              <div class="mb-2">
+                                <input type="text" name="userName" class="form-control" placeholder="Seu Nome" required>
+                              </div>
+                              <div class="mb-2">
+                                <textarea name="content" class="form-control" rows="3" placeholder="Seu Comentário..."
+                                  required></textarea>
+                              </div>
+                              <button type="submit" class="btn btn-primary">Enviar Comentário</button>
+                            </form>
+                          </div>
+
+                    </div>
+                  </section>
                 </div>
 
+                <!-- Sidebar -->
                 <div class="col-lg-4 sidebar">
                   <div class="widgets-container">
                     <div class="blog-author-widget widget-item d-flex flex-column align-items-center">
@@ -159,15 +242,14 @@
                                         <% } %>
                             </div>
                     </div>
-                    <!-- Adicione outros widgets se necessário -->
                   </div>
                 </div>
+
                 <% } %>
           </div>
         </div>
       </main>
 
-      <!-- Footer -->
       <%- include('partials/footer') %>
 
         <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -177,8 +259,6 @@
         <script src="/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
         <script src="/vendor/isotope-layout/isotope.pkgd.min.js"></script>
         <script src="/vendor/swiper/swiper-bundle.min.js"></script>
-
-        <!-- Main JS File -->
         <script src="/js/main.js"></script>
   </body>
 
