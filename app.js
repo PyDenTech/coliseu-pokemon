@@ -86,7 +86,7 @@ app.get("/auth", (req, res) => {
     res.render("auth");
 });
 
-// Rota do Blog - Carrega apenas postagens publicadas
+// Rota do Blog - lista postagens publicadas
 app.get("/blog", (req, res) => {
     const sqlPublishedPosts = `
     SELECT p.*, u.name as authorName
@@ -103,6 +103,29 @@ app.get("/blog", (req, res) => {
         return res.render("blog", {
             user: req.session.user || null,
             posts: publishedPosts,
+        });
+    });
+});
+
+// Rota de detalhes de uma postagem específica (exibida se estiver publicada)
+app.get("/blog-details/:id", (req, res) => {
+    const { id } = req.params;
+    const sqlDetails = `
+    SELECT p.*, u.name as authorName
+    FROM posts p
+    JOIN users u ON p.authorId = u.id
+    WHERE p.id = ?
+      AND p.status = 'publicado'
+  `;
+    db.get(sqlDetails, [id], (err, postRow) => {
+        if (err) {
+            console.error("Erro ao buscar postagem:", err.message);
+            return res.status(500).send("Erro ao carregar detalhes da postagem.");
+        }
+        // Se não existir ou estiver com status != publicado, retorna sem post
+        return res.render("blog-details", {
+            user: req.session.user || null,
+            post: postRow || null,
         });
     });
 });
@@ -155,6 +178,7 @@ app.post("/login", (req, res) => {
             roles: userRolesArray,
         };
 
+        // Lógica de direcionamento
         const adminGroup = ["Master", "Admin", "Moderador"];
         const writerGroup = ["Escritor"];
         const revisorGroup = ["Revisor"];
@@ -168,7 +192,6 @@ app.post("/login", (req, res) => {
         if (hasWriter) possibleDashboards.push("Escritor");
         if (hasRevisor) possibleDashboards.push("Revisor");
 
-        // Redireciona de acordo com as roles
         if (possibleDashboards.length === 1) {
             if (possibleDashboards[0] === "Admin") {
                 return res.redirect("/dashboard/admin");
@@ -507,7 +530,7 @@ app.get("/dashboard/writer", isAuthenticated, hasRole("Escritor"), (req, res) =>
         }
         return res.render("dashboard/writer", {
             user: req.session.user,
-            posts: postRows
+            posts: postRows,
         });
     });
 });
@@ -660,10 +683,7 @@ app.post("/dashboard/revisor/request-changes", isAuthenticated, hasRole("Revisor
         [title, featuredImage, images, tags, franchiseType, franchiseDetail, content, postId],
         function (err) {
             if (err) {
-                console.error(
-                    "Erro ao solicitar alterações (Revisor):",
-                    err.message
-                );
+                console.error("Erro ao solicitar alterações (Revisor):", err.message);
                 return res
                     .status(500)
                     .send("Erro ao atualizar postagem para revisão.");
@@ -709,7 +729,7 @@ app.post("/dashboard/revisor/approve-post", isAuthenticated, hasRole("Revisor"),
     );
 });
 
-// Inicia o servidor
+// Sobe o servidor
 app.listen(PORT, () => {
     console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
