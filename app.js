@@ -4,6 +4,19 @@ const path = require("path");
 const sqlite3 = require("sqlite3").verbose();
 const bcrypt = require("bcrypt");
 const session = require("express-session");
+const multer = require("multer");
+
+// Configurações de upload (limite de 2MB e apenas imagens)
+const upload = multer({
+    dest: path.join(__dirname, "public", "uploads"),
+    limits: { fileSize: 2 * 1024 * 1024 }, // 2MB
+    fileFilter: (req, file, cb) => {
+        if (!file.mimetype.startsWith("image/")) {
+            return cb(new Error("Apenas arquivos de imagem são permitidos!"));
+        }
+        cb(null, true);
+    },
+});
 
 const app = express();
 const PORT = 3000;
@@ -33,7 +46,6 @@ db.run(`
   )
 `);
 
-// Tabela users já existia, mas agora com novos campos (profile_pic, biography, facebook, instagram, x_profile).
 db.run(`
   CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -42,16 +54,15 @@ db.run(`
       password TEXT NOT NULL,
       roles TEXT DEFAULT '',
       approved INTEGER DEFAULT 0,
-      profile_pic TEXT,      -- Novo campo: foto de perfil
-      biography TEXT,        -- Novo campo: biografia
-      facebook TEXT,         -- Novo campo: link do Facebook
-      instagram TEXT,        -- Novo campo: link do Instagram
-      x_profile TEXT,        -- Novo campo: link do X (antigo Twitter)
+      profile_pic TEXT,
+      biography TEXT,
+      facebook TEXT,
+      instagram TEXT,
+      x_profile TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )
 `);
 
-// Configurações gerais
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
@@ -67,7 +78,6 @@ app.use(
     })
 );
 
-// Middlewares de autenticação
 function isAuthenticated(req, res, next) {
     if (req.session.user) return next();
     return res.redirect("/auth");
@@ -82,22 +92,22 @@ function hasRole(role) {
     };
 }
 
-// Rotas públicas
+// Página inicial
 app.get("/", (req, res) => {
     const sql = `
-        SELECT p.*,
-               u.name AS authorName,
-               u.profile_pic AS authorPic,
-               u.biography AS authorBio,
-               u.facebook AS authorFacebook,
-               u.instagram AS authorInstagram,
-               u.x_profile AS authorXProfile
-        FROM posts p
-        JOIN users u ON p.authorId = u.id
-        WHERE p.status = 'publicado'
-        ORDER BY p.created_at DESC
-        LIMIT 3
-    `;
+    SELECT p.*,
+           u.name AS authorName,
+           u.profile_pic AS authorPic,
+           u.biography AS authorBio,
+           u.facebook AS authorFacebook,
+           u.instagram AS authorInstagram,
+           u.x_profile AS authorXProfile
+    FROM posts p
+    JOIN users u ON p.authorId = u.id
+    WHERE p.status = 'publicado'
+    ORDER BY p.created_at DESC
+    LIMIT 3
+  `;
     db.all(sql, [], (err, lastPosts) => {
         if (err) {
             console.error("Erro ao buscar últimas postagens:", err.message);
@@ -105,24 +115,25 @@ app.get("/", (req, res) => {
         }
         res.render("index", {
             user: req.session.user || null,
-            lastPosts: lastPosts
+            lastPosts: lastPosts,
         });
     });
 });
 
+// Auth
 app.get("/auth", (req, res) => {
     res.render("auth");
 });
 
+// Página de perfil
 app.get("/profile", isAuthenticated, (req, res) => {
     const userId = req.session.user.id;
-
     const sql = `
-      SELECT id, name, email, profile_pic, biography,
-             facebook, instagram, x_profile
-      FROM users
-      WHERE id = ?
-    `;
+    SELECT id, name, email, profile_pic, biography,
+           facebook, instagram, x_profile
+    FROM users
+    WHERE id = ?
+  `;
     db.get(sql, [userId], (err, userRow) => {
         if (err) {
             console.error("Erro ao buscar dados de perfil:", err.message);
@@ -132,24 +143,39 @@ app.get("/profile", isAuthenticated, (req, res) => {
             return res.status(404).send("Usuário não encontrado.");
         }
         return res.render("profile", {
-            user: req.session.user || null, // Usuário logado em sessão
-            profileUser: userRow            // Dados do perfil
+            user: req.session.user || null,
+            profileUser: userRow,
         });
     });
 });
 
-app.post("/profile", isAuthenticated, (req, res) => {
+// Atualização do perfil (com upload de arquivo)
+app.post("/profile", isAuthenticated, upload.single("profile_pic"), (req, res) => {
     const userId = req.session.user.id;
     const {
         name,
-        profile_pic,
         biography,
         facebook,
         instagram,
-        x_profile
+        x_profile,
     } = req.body;
 
-    const sql = `
+    let newProfilePic = null;
+    if (req.file) {
+        newProfilePic = "/uploads/" + req.file.filename;
+    }
+
+    // Se não subiu novo arquivo, mantém o antigo (opcional)
+    const getOldPicSql = "SELECT profile_pic FROM users WHERE id = ?";
+    db.get(getOldPicSql, [userId], (err, row) => {
+        if (err) {
+            console.error("Erro ao buscar foto antiga:", err.message);
+            return res.status(500).send("Erro ao atualizar perfil.");
+        }
+
+        const finalProfilePic = newProfilePic ? newProfilePic : row.profile_pic;
+
+        const sql = `
       UPDATE users
       SET name = ?,
           profile_pic = ?,
@@ -159,38 +185,36 @@ app.post("/profile", isAuthenticated, (req, res) => {
           x_profile = ?
       WHERE id = ?
     `;
-
-    db.run(
-        sql,
-        [name, profile_pic, biography, facebook, instagram, x_profile, userId],
-        function (err) {
-            if (err) {
-                console.error("Erro ao atualizar perfil:", err.message);
-                return res.status(500).send("Erro ao atualizar perfil.");
+        db.run(
+            sql,
+            [name, finalProfilePic, biography, facebook, instagram, x_profile, userId],
+            function (err2) {
+                if (err2) {
+                    console.error("Erro ao atualizar perfil:", err2.message);
+                    return res.status(500).send("Erro ao atualizar perfil.");
+                }
+                req.session.user.name = name;
+                return res.redirect("/profile");
             }
-            // Atualiza também o nome do usuário na sessão, se quiser
-            req.session.user.name = name;
-
-            return res.redirect("/profile");
-        }
-    );
+        );
+    });
 });
 
-// Rota do Blog - lista postagens publicadas (com dados do autor)
+// Blog
 app.get("/blog", (req, res) => {
     const sqlPublishedPosts = `
-      SELECT p.*,
-             u.name AS authorName,
-             u.profile_pic AS authorPic,
-             u.biography AS authorBio,
-             u.facebook AS authorFacebook,
-             u.instagram AS authorInstagram,
-             u.x_profile AS authorXProfile
-      FROM posts p
-      JOIN users u ON p.authorId = u.id
-      WHERE p.status = 'publicado'
-      ORDER BY p.created_at DESC
-    `;
+    SELECT p.*,
+           u.name AS authorName,
+           u.profile_pic AS authorPic,
+           u.biography AS authorBio,
+           u.facebook AS authorFacebook,
+           u.instagram AS authorInstagram,
+           u.x_profile AS authorXProfile
+    FROM posts p
+    JOIN users u ON p.authorId = u.id
+    WHERE p.status = 'publicado'
+    ORDER BY p.created_at DESC
+  `;
     db.all(sqlPublishedPosts, [], (err, publishedPosts) => {
         if (err) {
             console.error("Erro ao buscar postagens publicadas:", err.message);
@@ -203,23 +227,21 @@ app.get("/blog", (req, res) => {
     });
 });
 
-// Rota de detalhes de uma postagem específica (exibida se estiver publicada)
-// Também exibe dados do autor
 app.get("/blog-details/:id", (req, res) => {
     const { id } = req.params;
     const sqlDetails = `
-      SELECT p.*,
-             u.name AS authorName,
-             u.profile_pic AS authorPic,
-             u.biography AS authorBio,
-             u.facebook AS authorFacebook,
-             u.instagram AS authorInstagram,
-             u.x_profile AS authorXProfile
-      FROM posts p
-      JOIN users u ON p.authorId = u.id
-      WHERE p.id = ?
-        AND p.status = 'publicado'
-    `;
+    SELECT p.*,
+           u.name AS authorName,
+           u.profile_pic AS authorPic,
+           u.biography AS authorBio,
+           u.facebook AS authorFacebook,
+           u.instagram AS authorInstagram,
+           u.x_profile AS authorXProfile
+    FROM posts p
+    JOIN users u ON p.authorId = u.id
+    WHERE p.id = ?
+      AND p.status = 'publicado'
+  `;
     db.get(sqlDetails, [id], (err, postRow) => {
         if (err) {
             console.error("Erro ao buscar postagem:", err.message);
@@ -232,13 +254,14 @@ app.get("/blog-details/:id", (req, res) => {
     });
 });
 
-// Registro de usuário
+// Registro
 app.post("/register", async (req, res) => {
     try {
         const { name, email, password } = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
         db.run(
-            `INSERT INTO users (name, email, password, roles, approved) VALUES (?, ?, ?, ?, ?)`,
+            `INSERT INTO users (name, email, password, roles, approved)
+       VALUES (?, ?, ?, ?, ?)`,
             [name, email, hashedPassword, "", 0],
             function (err) {
                 if (err) {
@@ -309,7 +332,7 @@ app.post("/login", (req, res) => {
     });
 });
 
-// Escolha de qual painel acessar caso várias roles
+// Escolher painel se múltiplas roles
 app.get("/choose-role", isAuthenticated, (req, res) => {
     const adminGroup = ["Master", "Admin", "Moderador"];
     const writerGroup = ["Escritor"];
@@ -358,17 +381,17 @@ app.get("/dashboard/admin", isAuthenticated, hasRole("Admin"), (req, res) => {
             return res.status(500).send("Erro ao carregar usuários.");
         }
         const sqlPosts = `
-          SELECT p.*,
-                 u.name AS authorName,
-                 u.profile_pic AS authorPic,
-                 u.biography AS authorBio,
-                 u.facebook AS authorFacebook,
-                 u.instagram AS authorInstagram,
-                 u.x_profile AS authorXProfile
-          FROM posts p
-          JOIN users u ON p.authorId = u.id
-          ORDER BY p.created_at DESC
-        `;
+      SELECT p.*,
+             u.name AS authorName,
+             u.profile_pic AS authorPic,
+             u.biography AS authorBio,
+             u.facebook AS authorFacebook,
+             u.instagram AS authorInstagram,
+             u.x_profile AS authorXProfile
+      FROM posts p
+      JOIN users u ON p.authorId = u.id
+      ORDER BY p.created_at DESC
+    `;
         db.all(sqlPosts, [], (err2, allPosts) => {
             if (err2) {
                 console.error("Erro ao buscar postagens:", err2.message);
@@ -386,17 +409,13 @@ app.get("/dashboard/admin", isAuthenticated, hasRole("Admin"), (req, res) => {
 app.post("/dashboard/admin/update-roles", isAuthenticated, hasRole("Admin"), (req, res) => {
     const { userId, roles } = req.body;
     const rolesString = Array.isArray(roles) ? roles.join(",") : "";
-    db.run(
-        "UPDATE users SET roles = ? WHERE id = ?",
-        [rolesString, userId],
-        function (err) {
-            if (err) {
-                console.error("Erro ao atualizar funções:", err.message);
-                return res.status(500).send("Erro ao atualizar funções do usuário.");
-            }
-            return res.redirect("/dashboard/admin");
+    db.run("UPDATE users SET roles = ? WHERE id = ?", [rolesString, userId], function (err) {
+        if (err) {
+            console.error("Erro ao atualizar funções:", err.message);
+            return res.status(500).send("Erro ao atualizar funções do usuário.");
         }
-    );
+        return res.redirect("/dashboard/admin");
+    });
 });
 
 app.post("/dashboard/admin/toggle-approve", isAuthenticated, hasRole("Admin"), (req, res) => {
@@ -431,7 +450,6 @@ app.post("/dashboard/admin/delete-user", isAuthenticated, hasRole("Admin"), (req
     });
 });
 
-// Admin - Atualizar Postagem
 app.post("/dashboard/admin/update-post", isAuthenticated, hasRole("Admin"), (req, res) => {
     const {
         postId,
@@ -444,28 +462,19 @@ app.post("/dashboard/admin/update-post", isAuthenticated, hasRole("Admin"), (req
         content,
     } = req.body;
     const sql = `
-      UPDATE posts
-      SET title = ?,
-          featured_image = ?,
-          images = ?,
-          tags = ?,
-          franchise_type = ?,
-          franchise_detail = ?,
-          content = ?
-      WHERE id = ?
-    `;
+    UPDATE posts
+    SET title = ?,
+        featured_image = ?,
+        images = ?,
+        tags = ?,
+        franchise_type = ?,
+        franchise_detail = ?,
+        content = ?
+    WHERE id = ?
+  `;
     db.run(
         sql,
-        [
-            title,
-            featuredImage,
-            images,
-            tags,
-            franchiseType,
-            franchiseDetail,
-            content,
-            postId,
-        ],
+        [title, featuredImage, images, tags, franchiseType, franchiseDetail, content, postId],
         function (err) {
             if (err) {
                 console.error("Erro ao atualizar postagem (Admin):", err.message);
@@ -476,7 +485,6 @@ app.post("/dashboard/admin/update-post", isAuthenticated, hasRole("Admin"), (req
     );
 });
 
-// Admin - Deletar Post
 app.post("/dashboard/admin/delete-post", isAuthenticated, hasRole("Admin"), (req, res) => {
     const { postId } = req.body;
     db.run("DELETE FROM posts WHERE id = ?", [postId], function (err) {
@@ -488,7 +496,6 @@ app.post("/dashboard/admin/delete-post", isAuthenticated, hasRole("Admin"), (req
     });
 });
 
-// Admin - Reprovar Post
 app.post("/dashboard/admin/reject-post", isAuthenticated, hasRole("Admin"), (req, res) => {
     const {
         postId,
@@ -501,29 +508,20 @@ app.post("/dashboard/admin/reject-post", isAuthenticated, hasRole("Admin"), (req
         content,
     } = req.body;
     const sql = `
-      UPDATE posts
-      SET title = ?,
-          featured_image = ?,
-          images = ?,
-          tags = ?,
-          franchise_type = ?,
-          franchise_detail = ?,
-          content = ?,
-          status = 'reprovado'
-      WHERE id = ?
-    `;
+    UPDATE posts
+    SET title = ?,
+        featured_image = ?,
+        images = ?,
+        tags = ?,
+        franchise_type = ?,
+        franchise_detail = ?,
+        content = ?,
+        status = 'reprovado'
+    WHERE id = ?
+  `;
     db.run(
         sql,
-        [
-            title,
-            featuredImage,
-            images,
-            tags,
-            franchiseType,
-            franchiseDetail,
-            content,
-            postId,
-        ],
+        [title, featuredImage, images, tags, franchiseType, franchiseDetail, content, postId],
         function (err) {
             if (err) {
                 console.error("Erro ao reprovar postagem (Admin):", err.message);
@@ -534,7 +532,6 @@ app.post("/dashboard/admin/reject-post", isAuthenticated, hasRole("Admin"), (req
     );
 });
 
-// Admin - Publicar Post
 app.post("/dashboard/admin/publish-post", isAuthenticated, hasRole("Admin"), (req, res) => {
     const {
         postId,
@@ -547,29 +544,20 @@ app.post("/dashboard/admin/publish-post", isAuthenticated, hasRole("Admin"), (re
         content,
     } = req.body;
     const sql = `
-      UPDATE posts
-      SET title = ?,
-          featured_image = ?,
-          images = ?,
-          tags = ?,
-          franchise_type = ?,
-          franchise_detail = ?,
-          content = ?,
-          status = 'publicado'
-      WHERE id = ?
-    `;
+    UPDATE posts
+    SET title = ?,
+        featured_image = ?,
+        images = ?,
+        tags = ?,
+        franchise_type = ?,
+        franchise_detail = ?,
+        content = ?,
+        status = 'publicado'
+    WHERE id = ?
+  `;
     db.run(
         sql,
-        [
-            title,
-            featuredImage,
-            images,
-            tags,
-            franchiseType,
-            franchiseDetail,
-            content,
-            postId,
-        ],
+        [title, featuredImage, images, tags, franchiseType, franchiseDetail, content, postId],
         function (err) {
             if (err) {
                 console.error("Erro ao publicar postagem (Admin):", err.message);
@@ -580,7 +568,6 @@ app.post("/dashboard/admin/publish-post", isAuthenticated, hasRole("Admin"), (re
     );
 });
 
-// Admin - Despublicar Post
 app.post("/dashboard/admin/unpublish-post", isAuthenticated, hasRole("Admin"), (req, res) => {
     const {
         postId,
@@ -593,29 +580,20 @@ app.post("/dashboard/admin/unpublish-post", isAuthenticated, hasRole("Admin"), (
         content,
     } = req.body;
     const sql = `
-      UPDATE posts
-      SET title = ?,
-          featured_image = ?,
-          images = ?,
-          tags = ?,
-          franchise_type = ?,
-          franchise_detail = ?,
-          content = ?,
-          status = 'aprovado'
-      WHERE id = ?
-    `;
+    UPDATE posts
+    SET title = ?,
+        featured_image = ?,
+        images = ?,
+        tags = ?,
+        franchise_type = ?,
+        franchise_detail = ?,
+        content = ?,
+        status = 'aprovado'
+    WHERE id = ?
+  `;
     db.run(
         sql,
-        [
-            title,
-            featuredImage,
-            images,
-            tags,
-            franchiseType,
-            franchiseDetail,
-            content,
-            postId,
-        ],
+        [title, featuredImage, images, tags, franchiseType, franchiseDetail, content, postId],
         function (err) {
             if (err) {
                 console.error("Erro ao despublicar postagem (Admin):", err.message);
@@ -655,9 +633,9 @@ app.post("/dashboard/writer/create-post", isAuthenticated, hasRole("Escritor"), 
 
     db.run(
         `INSERT INTO posts (
-          title, content, featured_image, images, tags,
-          franchise_type, franchise_detail, status, authorId
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      title, content, featured_image, images, tags,
+      franchise_type, franchise_detail, status, authorId
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
             title,
             content,
@@ -691,9 +669,7 @@ app.post("/dashboard/writer/delete-post", isAuthenticated, hasRole("Escritor"), 
             return res.status(404).send("Postagem não encontrada.");
         }
         if (postRow.authorId !== writerId) {
-            return res
-                .status(403)
-                .send("Você não tem permissão para excluir esta postagem.");
+            return res.status(403).send("Você não tem permissão para excluir esta postagem.");
         }
         db.run("DELETE FROM posts WHERE id = ?", [postId], function (err2) {
             if (err2) {
@@ -708,18 +684,18 @@ app.post("/dashboard/writer/delete-post", isAuthenticated, hasRole("Escritor"), 
 // Revisor
 app.get("/dashboard/revisor", isAuthenticated, hasRole("Revisor"), (req, res) => {
     const sql = `
-        SELECT p.*,
-               u.name AS authorName,
-               u.profile_pic AS authorPic,
-               u.biography AS authorBio,
-               u.facebook AS authorFacebook,
-               u.instagram AS authorInstagram,
-               u.x_profile AS authorXProfile
-        FROM posts p
-        JOIN users u ON p.authorId = u.id
-        WHERE p.status = 'pendente'
-        ORDER BY p.created_at DESC
-    `;
+      SELECT p.*,
+             u.name AS authorName,
+             u.profile_pic AS authorPic,
+             u.biography AS authorBio,
+             u.facebook AS authorFacebook,
+             u.instagram AS authorInstagram,
+             u.x_profile AS authorXProfile
+      FROM posts p
+      JOIN users u ON p.authorId = u.id
+      WHERE p.status = 'pendente'
+      ORDER BY p.created_at DESC
+  `;
     db.all(sql, [], (err, postRows) => {
         if (err) {
             console.error("Erro ao buscar postagens pendentes:", err.message);
@@ -744,16 +720,16 @@ app.post("/dashboard/revisor/update-post", isAuthenticated, hasRole("Revisor"), 
         content,
     } = req.body;
     const sql = `
-      UPDATE posts
-      SET title = ?,
-          featured_image = ?,
-          images = ?,
-          tags = ?,
-          franchise_type = ?,
-          franchise_detail = ?,
-          content = ?
-      WHERE id = ?
-    `;
+    UPDATE posts
+    SET title = ?,
+        featured_image = ?,
+        images = ?,
+        tags = ?,
+        franchise_type = ?,
+        franchise_detail = ?,
+        content = ?
+    WHERE id = ?
+  `;
     db.run(
         sql,
         [title, featuredImage, images, tags, franchiseType, franchiseDetail, content, postId],
@@ -779,26 +755,24 @@ app.post("/dashboard/revisor/request-changes", isAuthenticated, hasRole("Revisor
         content,
     } = req.body;
     const sql = `
-      UPDATE posts
-      SET title = ?,
-          featured_image = ?,
-          images = ?,
-          tags = ?,
-          franchise_type = ?,
-          franchise_detail = ?,
-          content = ?,
-          status = 'revisao'
-      WHERE id = ?
-    `;
+    UPDATE posts
+    SET title = ?,
+        featured_image = ?,
+        images = ?,
+        tags = ?,
+        franchise_type = ?,
+        franchise_detail = ?,
+        content = ?,
+        status = 'revisao'
+    WHERE id = ?
+  `;
     db.run(
         sql,
         [title, featuredImage, images, tags, franchiseType, franchiseDetail, content, postId],
         function (err) {
             if (err) {
                 console.error("Erro ao solicitar alterações (Revisor):", err.message);
-                return res
-                    .status(500)
-                    .send("Erro ao atualizar postagem para revisão.");
+                return res.status(500).send("Erro ao atualizar postagem para revisão.");
             }
             return res.redirect("/dashboard/revisor");
         }
@@ -817,17 +791,17 @@ app.post("/dashboard/revisor/approve-post", isAuthenticated, hasRole("Revisor"),
         content,
     } = req.body;
     const sql = `
-      UPDATE posts
-      SET title = ?,
-          featured_image = ?,
-          images = ?,
-          tags = ?,
-          franchise_type = ?,
-          franchise_detail = ?,
-          content = ?,
-          status = 'aprovado'
-      WHERE id = ?
-    `;
+    UPDATE posts
+    SET title = ?,
+        featured_image = ?,
+        images = ?,
+        tags = ?,
+        franchise_type = ?,
+        franchise_detail = ?,
+        content = ?,
+        status = 'aprovado'
+    WHERE id = ?
+  `;
     db.run(
         sql,
         [title, featuredImage, images, tags, franchiseType, franchiseDetail, content, postId],
@@ -841,7 +815,6 @@ app.post("/dashboard/revisor/approve-post", isAuthenticated, hasRole("Revisor"),
     );
 });
 
-// Sobe o servidor
 app.listen(PORT, () => {
     console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
