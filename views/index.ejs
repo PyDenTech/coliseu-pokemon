@@ -1,9 +1,10 @@
+<!-- views/index.ejs -->
 <!DOCTYPE html>
 <html lang="pt-br">
-  <%- include('partials/head', { pageTitle: 'Coliseu Pokémon', pageDescription:
+  <%- include('partials/head', { pageTitle: 'Coliseu Pokémon' , pageDescription:
   'Bem-vindo ao Coliseu Pokémon! Aqui, compartilhamos batalhas épicas, dicas
   estratégicas e tudo sobre o mundo Pokémon. Junte-se a nós e faça parte desta
-  aventura!', pageKeywords: 'Pokémon, Batalhas, Dicas, Estratégias, Comunidade'
+  aventura!' , pageKeywords: 'Pokémon, Batalhas, Dicas, Estratégias, Comunidade'
   }) %>
 
   <body class="index-page">
@@ -866,12 +867,7 @@
                   <li class="na">Conteúdos exclusivos</li>
                 </ul>
                 <div class="btn-wrap">
-                  <a
-                    href="https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=2c93808494dc05c90194ebebff020776"
-                    class="btn-buy"
-                  >
-                    Apoiar Agora
-                  </a>
+                  <a href="#" class="btn-buy">Apoiar Agora</a>
                 </div>
               </div>
             </div>
@@ -892,12 +888,7 @@
                   <li class="na">Conteúdos exclusivos</li>
                 </ul>
                 <div class="btn-wrap">
-                  <a
-                    href="https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=2c93808494d5e4f40194ebec96800b24"
-                    class="btn-buy"
-                  >
-                    Apoiar Agora
-                  </a>
+                  <a href="#" class="btn-buy">Apoiar Agora</a>
                 </div>
               </div>
             </div>
@@ -918,12 +909,7 @@
                   <li>Conteúdos exclusivos</li>
                 </ul>
                 <div class="btn-wrap">
-                  <a
-                    href="https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=2c93808494d5e4f10194ebecdaf20b24"
-                    class="btn-buy"
-                  >
-                    Apoiar Agora
-                  </a>
+                  <a href="#" class="btn-buy">Apoiar Agora</a>
                 </div>
               </div>
             </div>
@@ -945,12 +931,7 @@
                   <li>Conteúdos exclusivos e personalizados</li>
                 </ul>
                 <div class="btn-wrap">
-                  <a
-                    href="https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=2c93808494dc05c90194ebed23e40777"
-                    class="btn-buy"
-                  >
-                    Apoiar Agora
-                  </a>
+                  <a href="#" class="btn-buy">Apoiar Agora</a>
                 </div>
               </div>
             </div>
@@ -968,12 +949,12 @@
 
         <div class="container">
           <div class="row gy-4">
-            <% if (lastPosts && lastPosts.length > 0) { %> <%
-            lastPosts.forEach((post, index) => { %>
+            <% if (lastPosts && lastPosts.length> 0) { %> <%
+            lastPosts.forEach((post, index)=> { %>
             <div
               class="col-xl-4 col-md-6"
               data-aos="fade-up"
-              data-aos-delay="<%= (index + 1) * 100 %>"
+              data-aos-delay="<%= (index+1)*100 %>"
             >
               <article>
                 <div class="post-img">
@@ -987,7 +968,7 @@
                   <%= post.tags ? post.tags : 'Notícia' %>
                 </p>
                 <h2 class="title">
-                  <a href="/blog-details/<%= post.id %>"><%= post.title %></a>
+                  <a href="/blog-details/<%= post.id %>"> <%= post.title %> </a>
                 </h2>
                 <div class="d-flex align-items-center">
                   <img
@@ -1009,6 +990,7 @@
                         Date(post.created_at).toLocaleDateString('pt-BR') %>
                       </time>
                     </p>
+                    <!-- Exibindo breve biography se quiser -->
                     <% if (post.authorBio) { %>
                     <p style="font-size: 14px; margin-top: 5px; color: #666">
                       <%= post.authorBio %>
