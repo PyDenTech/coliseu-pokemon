@@ -1,727 +1,1129 @@
-<!-- views/index.ejs -->
 <!DOCTYPE html>
 <html lang="pt-br">
+  <%- include('partials/head', {
+    pageTitle: 'Coliseu Pokémon',
+    pageDescription: 'Bem-vindo ao Coliseu Pokémon! Aqui, compartilhamos batalhas épicas, dicas estratégicas e tudo sobre o mundo Pokémon. Junte-se a nós e faça parte desta aventura!',
+    pageKeywords: 'Pokémon, Batalhas, Dicas, Estratégias, Comunidade'
+  }) %>
 
-<%- include('partials/head', { pageTitle: 'Coliseu Pokémon' ,
-    pageDescription: 'Bem-vindo ao Coliseu Pokémon! Aqui, compartilhamos batalhas épicas, dicas estratégicas e tudo sobre o mundo Pokémon. Junte-se a nós e faça parte desta aventura!'
-    , pageKeywords: 'Pokémon, Batalhas, Dicas, Estratégias, Comunidade' }) %>
+  <body class="index-page">
+    <!-- Header -->
+    <%- include('partials/header', { activePage: 'home' }) %>
 
-    <body class="index-page">
-        <!-- Header -->
-        <%- include('partials/header', { activePage: 'home' }) %>
+    <main class="main">
+      <!-- Hero Section -->
+      <section id="hero" class="hero section dark-background">
+        <div class="overlay"></div>
+        <div
+          id="hero-carousel"
+          data-bs-interval="5000"
+          class="carousel carousel-fade"
+          data-bs-ride="carousel"
+        >
+          <!-- Slide 1 -->
+          <div
+            class="carousel-item active"
+            style="
+              background-image: url('/img/slide1.png');
+              background-size: cover;
+              background-position: center;
+              background-repeat: no-repeat;
+              width: 100vw;
+            "
+          >
+            <div class="carousel-container">
+              <h2 class="animate__animated animate__fadeInDown">
+                Bem-vindo ao <span>Coliseu Pokémon</span>
+              </h2>
+              <p class="animate__animated animate__fadeInUp">
+                Um canal dedicado aos fãs de Pokémon, com batalhas, análises e
+                muito mais!
+              </p>
+              <a
+                href="#about"
+                class="btn-get-started animate__animated animate__fadeInUp scrollto"
+                >Saiba Mais</a
+              >
+            </div>
+          </div>
 
-            <main class="main">
+          <!-- Slide 2 -->
+          <div
+            class="carousel-item"
+            style="
+              background-image: url('/img/slide2.png');
+              background-size: cover;
+              background-position: center;
+              background-repeat: no-repeat;
+              width: 100vw;
+            "
+          >
+            <div class="carousel-container">
+              <h2 class="animate__animated animate__fadeInDown">
+                Exploração e Batalhas
+              </h2>
+              <p class="animate__animated animate__fadeInUp">
+                Desbrave o mundo Pokémon com a gente e participe das batalhas
+                épicas!
+              </p>
+              <a
+                href="#about"
+                class="btn-get-started animate__animated animate__fadeInUp scrollto"
+                >Saiba Mais</a
+              >
+            </div>
+          </div>
 
-                <!-- Hero Section -->
-                <section id="hero" class="hero section dark-background">
+          <!-- Slide 3 -->
+          <div
+            class="carousel-item"
+            style="
+              background-image: url('/img/slide3.png');
+              background-size: cover;
+              background-position: center;
+              background-repeat: no-repeat;
+              width: 100vw;
+            "
+          >
+            <div class="carousel-container">
+              <h2 class="animate__animated animate__fadeInDown">
+                Novidades e Dicas
+              </h2>
+              <p class="animate__animated animate__fadeInUp">
+                Fique por dentro das novidades e receba dicas para melhorar suas
+                estratégias!
+              </p>
+              <a
+                href="#about"
+                class="btn-get-started animate__animated animate__fadeInUp scrollto"
+                >Saiba Mais</a
+              >
+            </div>
+          </div>
 
-                    <div class="overlay"></div>
+          <a
+            class="carousel-control-prev"
+            href="#hero-carousel"
+            role="button"
+            data-bs-slide="prev"
+          >
+            <span
+              class="carousel-control-prev-icon bi bi-chevron-left"
+              aria-hidden="true"
+            ></span>
+          </a>
+          <a
+            class="carousel-control-next"
+            href="#hero-carousel"
+            role="button"
+            data-bs-slide="next"
+          >
+            <span
+              class="carousel-control-next-icon bi bi-chevron-right"
+              aria-hidden="true"
+            ></span>
+          </a>
+        </div>
 
-                    <div id="hero-carousel" data-bs-interval="5000" class="carousel carousel-fade"
-                        data-bs-ride="carousel">
-                        <!-- Slide 1 -->
-                        <div class="carousel-item active"
-                            style="background-image: url('/img/slide1.png'); background-size: cover; background-position: center; background-repeat: no-repeat; width: 100vw;">
-                            <div class="carousel-container">
-                                <h2 class="animate__animated animate__fadeInDown">Bem-vindo ao <span>Coliseu
-                                        Pokémon</span></h2>
-                                <p class="animate__animated animate__fadeInUp">Um canal dedicado aos fãs de Pokémon, com
-                                    batalhas, análises
-                                    e muito mais!</p>
-                                <a href="#about"
-                                    class="btn-get-started animate__animated animate__fadeInUp scrollto">Saiba Mais</a>
-                            </div>
-                        </div>
+        <svg
+          class="hero-waves"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          viewBox="0 24 150 28"
+          preserveAspectRatio="none"
+        >
+          <defs>
+            <path
+              id="wave-path"
+              d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"
+            ></path>
+          </defs>
+          <g class="wave1">
+            <use xlink:href="#wave-path" x="50" y="3"></use>
+          </g>
+          <g class="wave2">
+            <use xlink:href="#wave-path" x="50" y="0"></use>
+          </g>
+          <g class="wave3">
+            <use xlink:href="#wave-path" x="50" y="9"></use>
+          </g>
+        </svg>
+      </section>
+      <!-- /Hero Section -->
 
-                        <!-- Slide 2 -->
-                        <div class="carousel-item"
-                            style="background-image: url('/img/slide2.png'); background-size: cover; background-position: center; background-repeat: no-repeat; width: 100vw;">
-                            <div class="carousel-container">
-                                <h2 class="animate__animated animate__fadeInDown">Exploração e Batalhas</h2>
-                                <p class="animate__animated animate__fadeInUp">Desbrave o mundo Pokémon com a gente e
-                                    participe das batalhas
-                                    épicas!</p>
-                                <a href="#about"
-                                    class="btn-get-started animate__animated animate__fadeInUp scrollto">Saiba Mais</a>
-                            </div>
-                        </div>
+      <!-- About Section -->
+      <section id="about" class="about section">
+        <div class="container section-title" data-aos="fade-up">
+          <h2>Quem Somos</h2>
+          <p>Conheça o Coliseu Pokémon</p>
+        </div>
 
-                        <!-- Slide 3 -->
-                        <div class="carousel-item"
-                            style="background-image: url('/img/slide3.png'); background-size: cover; background-position: center; background-repeat: no-repeat; width: 100vw;">
-                            <div class="carousel-container">
-                                <h2 class="animate__animated animate__fadeInDown">Novidades e Dicas</h2>
-                                <p class="animate__animated animate__fadeInUp">Fique por dentro das novidades e receba
-                                    dicas para melhorar
-                                    suas estratégias!</p>
-                                <a href="#about"
-                                    class="btn-get-started animate__animated animate__fadeInUp scrollto">Saiba Mais</a>
-                            </div>
-                        </div>
+        <div class="container">
+          <div class="row gy-4">
+            <div
+              class="col-lg-6 content"
+              data-aos="fade-up"
+              data-aos-delay="100"
+            >
+              <p>
+                O Coliseu Pokemon é um canal criado para os apaixonados pelo
+                mundo Pokémon! Nosso objetivo é compartilhar conteúdo de
+                qualidade, desde batalhas épicas até análises estratégicas.
+              </p>
+              <ul>
+                <li>
+                  <i class="bi bi-check2-circle"></i>
+                  <span
+                    >Desbrave o universo Pokémon conosco e explore todos os
+                    detalhes.</span
+                  >
+                </li>
+                <li>
+                  <i class="bi bi-check2-circle"></i>
+                  <span
+                    >Participe de batalhas, torneios e receba dicas
+                    exclusivas.</span
+                  >
+                </li>
+                <li>
+                  <i class="bi bi-check2-circle"></i>
+                  <span
+                    >Fique por dentro das novidades e atualizações do mundo
+                    Pokémon.</span
+                  >
+                </li>
+              </ul>
+            </div>
+            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
+              <p>
+                Nosso canal é dedicado a todos que amam Pokémon, desde
+                treinadores iniciantes até os veteranos em busca de aperfeiçoar
+                suas habilidades. Compartilhamos dicas, estratégias e
+                informações que fazem a diferença nas suas jornadas Pokémon.
+                Junte-se a nós e faça parte da nossa comunidade!
+              </p>
+              <a
+                href="https://www.youtube.com/@coliseupokemon"
+                target="_blank"
+                class="read-more"
+              >
+                <span>Inscreva-se</span>
+                <i class="bi bi-youtube"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- /About Section -->
 
-                        <a class="carousel-control-prev" href="#hero-carousel" role="button" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon bi bi-chevron-left" aria-hidden="true"></span>
-                        </a>
+      <!-- Features Section -->
+      <section id="features" class="features section">
+        <div class="container">
+          <ul
+            class="nav nav-tabs row d-flex"
+            data-aos="fade-up"
+            data-aos-delay="100"
+          >
+            <li class="nav-item col-3">
+              <a
+                class="nav-link active show"
+                data-bs-toggle="tab"
+                data-bs-target="#features-tab-1"
+              >
+                <i class="bi bi-controller"></i>
+                <h4 class="d-none d-lg-block">Batalhas Estratégicas</h4>
+              </a>
+            </li>
+            <li class="nav-item col-3">
+              <a
+                class="nav-link"
+                data-bs-toggle="tab"
+                data-bs-target="#features-tab-2"
+              >
+                <i class="bi bi-camera-video"></i>
+                <h4 class="d-none d-lg-block">Análises de Episódios</h4>
+              </a>
+            </li>
+            <li class="nav-item col-3">
+              <a
+                class="nav-link"
+                data-bs-toggle="tab"
+                data-bs-target="#features-tab-3"
+              >
+                <i class="bi bi-people"></i>
+                <h4 class="d-none d-lg-block">Comunidade e Torneios</h4>
+              </a>
+            </li>
+            <li class="nav-item col-3">
+              <a
+                class="nav-link"
+                data-bs-toggle="tab"
+                data-bs-target="#features-tab-4"
+              >
+                <i class="bi bi-lightning-charge"></i>
+                <h4 class="d-none d-lg-block">Dicas e Estratégias</h4>
+              </a>
+            </li>
+          </ul>
 
-                        <a class="carousel-control-next" href="#hero-carousel" role="button" data-bs-slide="next">
-                            <span class="carousel-control-next-icon bi bi-chevron-right" aria-hidden="true"></span>
-                        </a>
+          <div class="tab-content" data-aos="fade-up" data-aos-delay="200">
+            <!-- Tab 1 - Batalhas Estratégicas -->
+            <div class="tab-pane fade active show" id="features-tab-1">
+              <div class="row">
+                <div class="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0">
+                  <h3>Explore estratégias avançadas para batalhas Pokémon.</h3>
+                  <p class="fst-italic">
+                    Aprenda como usar movimentos, habilidades e tipos de Pokémon
+                    a seu favor para vencer qualquer desafio.
+                  </p>
+                  <ul>
+                    <li>
+                      <i class="bi bi-check2-all"></i>
+                      <span
+                        >Dicas para aproveitar as fraquezas e resistências dos
+                        tipos.</span
+                      >
+                    </li>
+                    <li>
+                      <i class="bi bi-check2-all"></i>
+                      <span
+                        >Análise de times e como compor equipes
+                        balanceadas.</span
+                      >
+                    </li>
+                    <li>
+                      <i class="bi bi-check2-all"></i>
+                      <span
+                        >Estratégias para torneios e batalhas
+                        competitivas.</span
+                      >
+                    </li>
+                  </ul>
+                </div>
+                <div class="col-lg-6 order-1 order-lg-2 text-center">
+                  <img
+                    src="/img/battle-strategy.png"
+                    alt="Batalhas Estratégicas"
+                    class="img-fluid"
+                  />
+                </div>
+              </div>
+            </div>
+            <!-- Tab 2 - Análises de Episódios -->
+            <div class="tab-pane fade" id="features-tab-2">
+              <div class="row">
+                <div class="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0">
+                  <h3>Comentários e análises dos últimos episódios de Pokémon.</h3>
+                  <p>
+                    Fique por dentro dos melhores momentos e aprenda mais sobre
+                    o desenvolvimento da série.
+                  </p>
+                  <ul>
+                    <li>
+                      <i class="bi bi-check2-all"></i>
+                      <span>Análises dos personagens e suas jornadas.</span>
+                    </li>
+                    <li>
+                      <i class="bi bi-check2-all"></i>
+                      <span>Destaques de batalhas e eventos importantes.</span>
+                    </li>
+                    <li>
+                      <i class="bi bi-check2-all"></i>
+                      <span>Previsões para episódios futuros.</span>
+                    </li>
+                  </ul>
+                </div>
+                <div class="col-lg-6 order-1 order-lg-2 text-center">
+                  <img
+                    src="/img/episode-analysis.png"
+                    alt="Análises de Episódios"
+                    class="img-fluid"
+                  />
+                </div>
+              </div>
+            </div>
+            <!-- Tab 3 - Comunidade e Torneios -->
+            <div class="tab-pane fade" id="features-tab-3">
+              <div class="row">
+                <div class="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0">
+                  <h3>Participe da nossa comunidade de treinadores e torneios.</h3>
+                  <p>
+                    Conecte-se com outros fãs de Pokémon e entre em eventos
+                    exclusivos.
+                  </p>
+                  <ul>
+                    <li>
+                      <i class="bi bi-check2-all"></i>
+                      <span>Discussões sobre as melhores estratégias.</span>
+                    </li>
+                    <li>
+                      <i class="bi bi-check2-all"></i>
+                      <span>Torneios regulares para todos os níveis.</span>
+                    </li>
+                    <li>
+                      <i class="bi bi-check2-all"></i>
+                      <span>Conecte-se com outros treinadores Pokémon.</span>
+                    </li>
+                  </ul>
+                </div>
+                <div class="col-lg-6 order-1 order-lg-2 text-center">
+                  <img
+                    src="/img/community-tournaments.png"
+                    alt="Comunidade e Torneios"
+                    class="img-fluid"
+                  />
+                </div>
+              </div>
+            </div>
+            <!-- Tab 4 - Dicas e Estratégias -->
+            <div class="tab-pane fade" id="features-tab-4">
+              <div class="row">
+                <div class="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0">
+                  <h3>Dicas exclusivas para melhorar suas habilidades de treinador.</h3>
+                  <p>
+                    Aprenda truques e estratégias que ajudam a se tornar um
+                    Mestre Pokémon.
+                  </p>
+                  <ul>
+                    <li>
+                      <i class="bi bi-check2-all"></i>
+                      <span>Como capturar Pokémon raros e lendários.</span>
+                    </li>
+                    <li>
+                      <i class="bi bi-check2-all"></i>
+                      <span>Dicas de treinamento para evoluir seu time.</span>
+                    </li>
+                    <li>
+                      <i class="bi bi-check2-all"></i>
+                      <span>Estratégias para maximizar a eficiência em batalhas.</span>
+                    </li>
+                  </ul>
+                </div>
+                <div class="col-lg-6 order-1 order-lg-2 text-center">
+                  <img
+                    src="/img/tips-strategies.png"
+                    alt="Dicas e Estratégias"
+                    class="img-fluid"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- /Features Section -->
+
+      <!-- Services Section -->
+      <section id="services" class="services section">
+        <div class="container section-title" data-aos="fade-up">
+          <h2>Sorteios</h2>
+          <p>Participe dos nossos sorteios e concorra a prêmios incríveis!</p>
+        </div>
+        <div class="container">
+          <div class="row gy-4">
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+              <div class="service-item position-relative">
+                <div class="icon">
+                  <i class="bi bi-gift" style="color: #0dcaf0"></i>
+                </div>
+                <a href="service-details.html" class="stretched-link">
+                  <h3>Cartões Presente</h3>
+                </a>
+                <p>
+                  Concorra a cartões presente para jogos e lojas online, ideais
+                  para expandir sua coleção Pokémon!
+                </p>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+              <div class="service-item position-relative">
+                <div class="icon">
+                  <i class="bi bi-controller" style="color: #fd7e14"></i>
+                </div>
+                <a href="service-details.html" class="stretched-link">
+                  <h3>Jogos Pokémon</h3>
+                </a>
+                <p>
+                  Ganhe edições dos jogos Pokémon para diversas plataformas e
+                  vivencie aventuras únicas.
+                </p>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+              <div class="service-item position-relative">
+                <div class="icon">
+                  <i class="bi bi-star" style="color: #20c997"></i>
+                </div>
+                <a href="service-details.html" class="stretched-link">
+                  <h3>Figuras Colecionáveis</h3>
+                </a>
+                <p>
+                  Participe para ganhar figuras exclusivas dos seus Pokémon
+                  favoritos e ampliar sua coleção.
+                </p>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
+              <div class="service-item position-relative">
+                <div class="icon">
+                  <i class="bi bi-trophy" style="color: #df1529"></i>
+                </div>
+                <a href="service-details.html" class="stretched-link">
+                  <h3>Acessórios Exclusivos</h3>
+                </a>
+                <p>
+                  Concorra a acessórios temáticos de Pokémon, como bonés,
+                  camisetas e chaveiros.
+                </p>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
+              <div class="service-item position-relative">
+                <div class="icon">
+                  <i class="bi bi-calendar-event" style="color: #6610f2"></i>
+                </div>
+                <a href="service-details.html" class="stretched-link">
+                  <h3>Participação em Eventos</h3>
+                </a>
+                <p>
+                  Tenha a chance de ganhar ingressos para eventos exclusivos de
+                  Pokémon em sua região.
+                </p>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
+              <div class="service-item position-relative">
+                <div class="icon">
+                  <i class="bi bi-dice-6" style="color: #f3268c"></i>
+                </div>
+                <a href="service-details.html" class="stretched-link">
+                  <h3>Itens Raros no Jogo</h3>
+                </a>
+                <p>
+                  Participe para ganhar itens raros dentro dos jogos Pokémon e
+                  impulsione sua jornada!
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- /Services Section -->
+
+      <!-- Portfolio Section -->
+      <section id="portfolio" class="portfolio section">
+        <div class="container section-title" data-aos="fade-up">
+          <h2>Torneios e Competições</h2>
+          <p>Confira nossos torneios e eventos</p>
+        </div>
+        <div class="container">
+          <div
+            class="isotope-layout"
+            data-default-filter="*"
+            data-layout="masonry"
+            data-sort="original-order"
+          >
+            <ul
+              class="portfolio-filters isotope-filters"
+              data-aos="fade-up"
+              data-aos-delay="100"
+            >
+              <li data-filter="*" class="filter-active">Todos</li>
+              <li data-filter=".filter-local">Locais</li>
+              <li data-filter=".filter-online">Online</li>
+              <li data-filter=".filter-especial">Especiais</li>
+            </ul>
+            <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200">
+              <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-local">
+                <img
+                  src="/img/masonry-portfolio/masonry-portfolio-1.jpg"
+                  class="img-fluid"
+                  alt=""
+                />
+                <div class="portfolio-info">
+                  <h4>Torneio Local 1</h4>
+                  <p>Compita com treinadores da sua região!</p>
+                  <a
+                    href="/img/masonry-portfolio/masonry-portfolio-1.jpg"
+                    title="Torneio Local 1"
+                    data-gallery="portfolio-gallery-local"
+                    class="glightbox preview-link"
+                    ><i class="bi bi-zoom-in"></i
+                  ></a>
+                  <a
+                    href="portfolio-details.html"
+                    title="Mais Detalhes"
+                    class="details-link"
+                    ><i class="bi bi-link-45deg"></i
+                  ></a>
+                </div>
+              </div>
+              <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-online">
+                <img
+                  src="/img/masonry-portfolio/masonry-portfolio-2.jpg"
+                  class="img-fluid"
+                  alt=""
+                />
+                <div class="portfolio-info">
+                  <h4>Competição Online 1</h4>
+                  <p>Participe de batalhas online e teste suas habilidades!</p>
+                  <a
+                    href="/img/masonry-portfolio/masonry-portfolio-2.jpg"
+                    title="Competição Online 1"
+                    data-gallery="portfolio-gallery-online"
+                    class="glightbox preview-link"
+                    ><i class="bi bi-zoom-in"></i
+                  ></a>
+                  <a
+                    href="portfolio-details.html"
+                    title="Mais Detalhes"
+                    class="details-link"
+                    ><i class="bi bi-link-45deg"></i
+                  ></a>
+                </div>
+              </div>
+              <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-especial">
+                <img
+                  src="/img/masonry-portfolio/masonry-portfolio-3.jpg"
+                  class="img-fluid"
+                  alt=""
+                />
+                <div class="portfolio-info">
+                  <h4>Evento Especial 1</h4>
+                  <p>Um evento único com prêmios exclusivos!</p>
+                  <a
+                    href="/img/masonry-portfolio/masonry-portfolio-3.jpg"
+                    title="Evento Especial 1"
+                    data-gallery="portfolio-gallery-especial"
+                    class="glightbox preview-link"
+                    ><i class="bi bi-zoom-in"></i
+                  ></a>
+                  <a
+                    href="portfolio-details.html"
+                    title="Mais Detalhes"
+                    class="details-link"
+                    ><i class="bi bi-link-45deg"></i
+                  ></a>
+                </div>
+              </div>
+              <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-local">
+                <img
+                  src="/img/masonry-portfolio/masonry-portfolio-4.jpg"
+                  class="img-fluid"
+                  alt=""
+                />
+                <div class="portfolio-info">
+                  <h4>Torneio Local 2</h4>
+                  <p>Desafie outros treinadores na sua cidade!</p>
+                  <a
+                    href="/img/masonry-portfolio/masonry-portfolio-4.jpg"
+                    title="Torneio Local 2"
+                    data-gallery="portfolio-gallery-local"
+                    class="glightbox preview-link"
+                    ><i class="bi bi-zoom-in"></i
+                  ></a>
+                  <a
+                    href="portfolio-details.html"
+                    title="Mais Detalhes"
+                    class="details-link"
+                    ><i class="bi bi-link-45deg"></i
+                  ></a>
+                </div>
+              </div>
+              <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-online">
+                <img
+                  src="/img/masonry-portfolio/masonry-portfolio-5.jpg"
+                  class="img-fluid"
+                  alt=""
+                />
+                <div class="portfolio-info">
+                  <h4>Competição Online 2</h4>
+                  <p>Enfrente treinadores de várias partes do mundo!</p>
+                  <a
+                    href="/img/masonry-portfolio/masonry-portfolio-5.jpg"
+                    title="Competição Online 2"
+                    data-gallery="portfolio-gallery-online"
+                    class="glightbox preview-link"
+                    ><i class="bi bi-zoom-in"></i
+                  ></a>
+                  <a
+                    href="portfolio-details.html"
+                    title="Mais Detalhes"
+                    class="details-link"
+                    ><i class="bi bi-link-45deg"></i
+                  ></a>
+                </div>
+              </div>
+              <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-especial">
+                <img
+                  src="/img/masonry-portfolio/masonry-portfolio-6.jpg"
+                  class="img-fluid"
+                  alt=""
+                />
+                <div class="portfolio-info">
+                  <h4>Evento Especial 2</h4>
+                  <p>
+                    Um campeonato exclusivo para verdadeiros Mestres Pokémon.
+                  </p>
+                  <a
+                    href="/img/masonry-portfolio/masonry-portfolio-6.jpg"
+                    title="Evento Especial 2"
+                    data-gallery="portfolio-gallery-especial"
+                    class="glightbox preview-link"
+                    ><i class="bi bi-zoom-in"></i
+                  ></a>
+                  <a
+                    href="portfolio-details.html"
+                    title="Mais Detalhes"
+                    class="details-link"
+                    ><i class="bi bi-link-45deg"></i
+                  ></a>
+                </div>
+              </div>
+              <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-local">
+                <img
+                  src="/img/masonry-portfolio/masonry-portfolio-7.jpg"
+                  class="img-fluid"
+                  alt=""
+                />
+                <div class="portfolio-info">
+                  <h4>Torneio Local 3</h4>
+                  <p>Participe e mostre suas habilidades na arena local!</p>
+                  <a
+                    href="/img/masonry-portfolio/masonry-portfolio-7.jpg"
+                    title="Torneio Local 3"
+                    data-gallery="portfolio-gallery-local"
+                    class="glightbox preview-link"
+                    ><i class="bi bi-zoom-in"></i
+                  ></a>
+                  <a
+                    href="portfolio-details.html"
+                    title="Mais Detalhes"
+                    class="details-link"
+                    ><i class="bi bi-link-45deg"></i
+                  ></a>
+                </div>
+              </div>
+              <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-online">
+                <img
+                  src="/img/masonry-portfolio/masonry-portfolio-8.jpg"
+                  class="img-fluid"
+                  alt=""
+                />
+                <div class="portfolio-info">
+                  <h4>Competição Online 3</h4>
+                  <p>
+                    Teste suas estratégias contra treinadores de todo o país.
+                  </p>
+                  <a
+                    href="/img/masonry-portfolio/masonry-portfolio-8.jpg"
+                    title="Competição Online 3"
+                    data-gallery="portfolio-gallery-online"
+                    class="glightbox preview-link"
+                    ><i class="bi bi-zoom-in"></i
+                  ></a>
+                  <a
+                    href="portfolio-details.html"
+                    title="Mais Detalhes"
+                    class="details-link"
+                    ><i class="bi bi-link-45deg"></i
+                  ></a>
+                </div>
+              </div>
+              <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-especial">
+                <img
+                  src="/img/masonry-portfolio/masonry-portfolio-9.jpg"
+                  class="img-fluid"
+                  alt=""
+                />
+                <div class="portfolio-info">
+                  <h4>Evento Especial 3</h4>
+                  <p>
+                    O maior torneio do ano, com prêmios incríveis e muito mais!
+                  </p>
+                  <a
+                    href="/img/masonry-portfolio/masonry-portfolio-9.jpg"
+                    title="Evento Especial 3"
+                    data-gallery="portfolio-gallery-especial"
+                    class="glightbox preview-link"
+                    ><i class="bi bi-zoom-in"></i
+                  ></a>
+                  <a
+                    href="portfolio-details.html"
+                    title="Mais Detalhes"
+                    class="details-link"
+                    ><i class="bi bi-link-45deg"></i
+                  ></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- /Portfolio Section -->
+
+      <!-- Pricing Section -->
+      <section id="pricing" class="pricing section">
+        <div class="container section-title" data-aos="fade-up">
+          <h2>Apoie o Coliseu</h2>
+          <p>
+            Escolha seu nível de apoio e ajude a fortalecer nossa comunidade
+            Pokémon!
+          </p>
+        </div>
+        <div class="container">
+          <div class="row gy-3">
+            <!-- Gladiador Novato -->
+            <div class="col-xl-3 col-lg-6" data-aos="fade-up" data-aos-delay="100">
+              <div class="pricing-item">
+                <h3>Gladiador Novato</h3>
+                <h4><sup>R$</sup>5<span> / mês</span></h4>
+                <ul>
+                  <li>Acesso antecipado a vídeos</li>
+                  <li>Nome nos créditos dos vídeos</li>
+                  <li>Participação em sorteios exclusivos</li>
+                  <li class="na">Acesso ao grupo de apoiadores</li>
+                  <li class="na">Conteúdos exclusivos</li>
+                </ul>
+                <div class="btn-wrap">
+                  <a
+                    href="https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=2c93808494dc05c90194ebebff020776"
+                    name="MP-payButton"
+                    class="btn-buy"
+                  >
+                    Apoiar Agora
+                  </a>
+                  <script type="text/javascript">
+                    (function() {
+                      function $MPC_load() {
+                        window.$MPC_loaded !== true && (function() {
+                          var s = document.createElement("script");
+                          s.type = "text/javascript";
+                          s.async = true;
+                          s.src = document.location.protocol + "//secure.mlstatic.com/mptools/render.js";
+                          var x = document.getElementsByTagName('script')[0];
+                          x.parentNode.insertBefore(s, x);
+                          window.$MPC_loaded = true;
+                        })();
+                      }
+                      window.$MPC_loaded !== true
+                        ? (window.attachEvent
+                          ? window.attachEvent('onload', $MPC_load)
+                          : window.addEventListener('load', $MPC_load, false))
+                        : null;
+                    })();
+                  </script>
+                </div>
+              </div>
+            </div>
+            <!-- Gladiador Veterano -->
+            <div class="col-xl-3 col-lg-6" data-aos="fade-up" data-aos-delay="200">
+              <div class="pricing-item featured">
+                <h3>Gladiador Veterano</h3>
+                <h4><sup>R$</sup>15<span> / mês</span></h4>
+                <ul>
+                  <li>Acesso antecipado a vídeos</li>
+                  <li>Nome nos créditos dos vídeos</li>
+                  <li>Participação em sorteios exclusivos</li>
+                  <li>Acesso ao grupo de apoiadores</li>
+                  <li class="na">Conteúdos exclusivos</li>
+                </ul>
+                <div class="btn-wrap">
+                  <a
+                    href="https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=2c93808494d5e4f40194ebec96800b24"
+                    name="MP-payButton"
+                    class="btn-buy"
+                  >
+                    Apoiar Agora
+                  </a>
+                  <script type="text/javascript">
+                    (function() {
+                      function $MPC_load() {
+                        window.$MPC_loaded !== true && (function() {
+                          var s = document.createElement("script");
+                          s.type = "text/javascript";
+                          s.async = true;
+                          s.src = document.location.protocol + "//secure.mlstatic.com/mptools/render.js";
+                          var x = document.getElementsByTagName('script')[0];
+                          x.parentNode.insertBefore(s, x);
+                          window.$MPC_loaded = true;
+                        })();
+                      }
+                      window.$MPC_loaded !== true
+                        ? (window.attachEvent
+                          ? window.attachEvent('onload', $MPC_load)
+                          : window.addEventListener('load', $MPC_load, false))
+                        : null;
+                    })();
+                  </script>
+                </div>
+              </div>
+            </div>
+            <!-- Gladiador de Elite -->
+            <div class="col-xl-3 col-lg-6" data-aos="fade-up" data-aos-delay="400">
+              <div class="pricing-item">
+                <h3>Gladiador de Elite</h3>
+                <h4><sup>R$</sup>30<span> / mês</span></h4>
+                <ul>
+                  <li>Acesso antecipado a vídeos</li>
+                  <li>Nome nos créditos dos vídeos</li>
+                  <li>Participação em sorteios exclusivos</li>
+                  <li>Acesso ao grupo de apoiadores</li>
+                  <li>Conteúdos exclusivos</li>
+                </ul>
+                <div class="btn-wrap">
+                  <a
+                    href="https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=2c93808494d5e4f10194ebecdaf20b24"
+                    name="MP-payButton"
+                    class="btn-buy"
+                  >
+                    Apoiar Agora
+                  </a>
+                  <script type="text/javascript">
+                    (function() {
+                      function $MPC_load() {
+                        window.$MPC_loaded !== true && (function() {
+                          var s = document.createElement("script");
+                          s.type = "text/javascript";
+                          s.async = true;
+                          s.src = document.location.protocol + "//secure.mlstatic.com/mptools/render.js";
+                          var x = document.getElementsByTagName('script')[0];
+                          x.parentNode.insertBefore(s, x);
+                          window.$MPC_loaded = true;
+                        })();
+                      }
+                      window.$MPC_loaded !== true
+                        ? (window.attachEvent
+                          ? window.attachEvent('onload', $MPC_load)
+                          : window.addEventListener('load', $MPC_load, false))
+                        : null;
+                    })();
+                  </script>
+                </div>
+              </div>
+            </div>
+            <!-- Gladiador Supremo -->
+            <div class="col-xl-3 col-lg-6" data-aos="fade-up" data-aos-delay="400">
+              <div class="pricing-item">
+                <span class="advanced">Mestre</span>
+                <h3>Gladiador Supremo</h3>
+                <h4><sup>R$</sup>50<span> / mês</span></h4>
+                <ul>
+                  <li>Acesso antecipado a vídeos</li>
+                  <li>Nome nos créditos dos vídeos</li>
+                  <li>Participação em sorteios exclusivos</li>
+                  <li>Acesso ao grupo de apoiadores</li>
+                  <li>Conteúdos exclusivos e personalizados</li>
+                </ul>
+                <div class="btn-wrap">
+                  <a
+                    href="https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=2c93808494dc05c90194ebed23e40777"
+                    name="MP-payButton"
+                    class="btn-buy"
+                  >
+                    Apoiar Agora
+                  </a>
+                  <script type="text/javascript">
+                    (function() {
+                      function $MPC_load() {
+                        window.$MPC_loaded !== true && (function() {
+                          var s = document.createElement("script");
+                          s.type = "text/javascript";
+                          s.async = true;
+                          s.src = document.location.protocol + "//secure.mlstatic.com/mptools/render.js";
+                          var x = document.getElementsByTagName('script')[0];
+                          x.parentNode.insertBefore(s, x);
+                          window.$MPC_loaded = true;
+                        })();
+                      }
+                      window.$MPC_loaded !== true
+                        ? (window.attachEvent
+                          ? window.attachEvent('onload', $MPC_load)
+                          : window.addEventListener('load', $MPC_load, false))
+                        : null;
+                    })();
+                  </script>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- /Pricing Section -->
+
+      <!-- Recent Posts Section -->
+      <section id="recent-posts" class="recent-posts section">
+        <div class="container section-title" data-aos="fade-up">
+          <h2>Últimas Notícias</h2>
+          <p>Fique por dentro das novidades do mundo Pokémon</p>
+        </div>
+        <div class="container">
+          <div class="row gy-4">
+            <% if (lastPosts && lastPosts.length > 0) { %>
+              <% lastPosts.forEach((post, index) => { %>
+                <div
+                  class="col-xl-4 col-md-6"
+                  data-aos="fade-up"
+                  data-aos-delay="<%= (index + 1) * 100 %>"
+                >
+                  <article>
+                    <div class="post-img">
+                      <img
+                        src="<%= post.featured_image ? post.featured_image : '/img/blog/blog-1.jpg' %>"
+                        alt="<%= post.title %>"
+                        class="img-fluid"
+                      />
                     </div>
-
-                    <svg class="hero-waves" xmlns="http://www.w3.org/2000/svg"
-                        xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none">
-                        <defs>
-                            <path id="wave-path"
-                                d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z">
-                            </path>
-                        </defs>
-                        <g class="wave1">
-                            <use xlink:href="#wave-path" x="50" y="3"></use>
-                        </g>
-                        <g class="wave2">
-                            <use xlink:href="#wave-path" x="50" y="0"></use>
-                        </g>
-                        <g class="wave3">
-                            <use xlink:href="#wave-path" x="50" y="9"></use>
-                        </g>
-                    </svg>
-
-                </section>
-                <!-- /Hero Section -->
-
-                <!-- About Section -->
-                <section id="about" class="about section">
-                    <div class="container section-title" data-aos="fade-up">
-                        <h2>Quem Somos</h2>
-                        <p>Conheça o Coliseu Pokémon</p>
+                    <p class="post-category">
+                      <%= post.tags ? post.tags : 'Notícia' %>
+                    </p>
+                    <h2 class="title">
+                      <a href="/blog-details/<%= post.id %>"><%= post.title %></a>
+                    </h2>
+                    <div class="d-flex align-items-center">
+                      <img
+                        src="<%= post.authorPic ? post.authorPic : '/img/blog/blog-author.jpg' %>"
+                        alt="Autor"
+                        class="img-fluid post-author-img flex-shrink-0"
+                        style="
+                          width: 50px;
+                          height: 50px;
+                          object-fit: cover;
+                          border-radius: 50%;
+                        "
+                      />
+                      <div class="post-meta">
+                        <p class="post-author"><%= post.authorName %></p>
+                        <p class="post-date">
+                          <time datetime="<%= post.created_at %>">
+                            <%= new Date(post.created_at).toLocaleDateString('pt-BR') %>
+                          </time>
+                        </p>
+                        <% if (post.authorBio) { %>
+                          <p style="font-size: 14px; margin-top: 5px; color: #666">
+                            <%= post.authorBio %>
+                          </p>
+                        <% } %>
+                      </div>
                     </div>
+                  </article>
+                </div>
+              <% }); %>
+            <% } else { %>
+              <p>Nenhuma notícia disponível no momento.</p>
+            <% } %>
+          </div>
+        </div>
+      </section>
+      <!-- /Recent Posts Section -->
 
-                    <div class="container">
-                        <div class="row gy-4">
-                            <div class="col-lg-6 content" data-aos="fade-up" data-aos-delay="100">
-                                <p>
-                                    O Coliseu Pokemon é um canal criado para os apaixonados pelo mundo Pokémon! Nosso
-                                    objetivo é compartilhar
-                                    conteúdo de qualidade, desde batalhas épicas até análises estratégicas.
-                                </p>
-                                <ul>
-                                    <li><i class="bi bi-check2-circle"></i> <span>Desbrave o universo Pokémon conosco e
-                                            explore todos os
-                                            detalhes.</span></li>
-                                    <li><i class="bi bi-check2-circle"></i> <span>Participe de batalhas, torneios e
-                                            receba dicas
-                                            exclusivas.</span></li>
-                                    <li><i class="bi bi-check2-circle"></i> <span>Fique por dentro das novidades e
-                                            atualizações do mundo
-                                            Pokémon.</span></li>
-                                </ul>
-                            </div>
-
-                            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
-                                <p>Nosso canal é dedicado a todos que amam Pokémon, desde treinadores iniciantes até os
-                                    veteranos em busca
-                                    de aperfeiçoar suas habilidades. Compartilhamos dicas, estratégias e informações que
-                                    fazem a diferença nas
-                                    suas jornadas Pokémon. Junte-se a nós e faça parte da nossa comunidade!</p>
-                                <a href="https://www.youtube.com/@coliseupokemon" target="_blank" class="read-more">
-                                    <span>Inscreva-se</span>
-                                    <i class="bi bi-youtube"></i>
-                                </a>
-                            </div>
-                        </div>
+      <!-- Contact Section -->
+      <section id="contact" class="contact section">
+        <div class="container section-title" data-aos="fade-up">
+          <h2>Contato</h2>
+          <p>Entre em contato com o Coliseu Pokémon</p>
+        </div>
+        <div class="container" data-aos="fade" data-aos-delay="100">
+          <div class="row gy-4">
+            <div class="col-lg-4">
+              <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="200">
+                <i class="bi bi-geo-alt flex-shrink-0"></i>
+                <div>
+                  <h3>Endereço</h3>
+                  <p>Avenida Pallet, 151, Cidade de Pallet, Mundo Pokémon</p>
+                </div>
+              </div>
+              <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="300">
+                <i class="bi bi-telephone flex-shrink-0"></i>
+                <div>
+                  <h3>Telefone</h3>
+                  <p>+55 21 99999-9999</p>
+                </div>
+              </div>
+              <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="400">
+                <i class="bi bi-envelope flex-shrink-0"></i>
+                <div>
+                  <h3>Email</h3>
+                  <p>contato@coliseupokemon.com</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-8">
+              <form
+                action="forms/contact.php"
+                method="post"
+                class="php-email-form"
+                data-aos="fade-up"
+                data-aos-delay="200"
+              >
+                <div class="row gy-4">
+                  <div class="col-md-6">
+                    <input
+                      type="text"
+                      name="name"
+                      class="form-control"
+                      placeholder="Seu Nome"
+                      required
+                    />
+                  </div>
+                  <div class="col-md-6">
+                    <input
+                      type="email"
+                      class="form-control"
+                      name="email"
+                      placeholder="Seu Email"
+                      required
+                    />
+                  </div>
+                  <div class="col-md-12">
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="subject"
+                      placeholder="Assunto"
+                      required
+                    />
+                  </div>
+                  <div class="col-md-12">
+                    <textarea
+                      class="form-control"
+                      name="message"
+                      rows="6"
+                      placeholder="Mensagem"
+                      required
+                    ></textarea>
+                  </div>
+                  <div class="col-md-12 text-center">
+                    <div class="loading">Carregando</div>
+                    <div class="error-message"></div>
+                    <div class="sent-message">
+                      Sua mensagem foi enviada. Obrigado!
                     </div>
-                </section>
-                <!-- /About Section -->
+                    <button type="submit">Enviar Mensagem</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <!-- End Contact Form -->
+          </div>
+        </div>
+      </section>
+      <!-- /Contact Section -->
+    </main>
 
-                <!-- Features Section -->
-                <section id="features" class="features section">
-                    <div class="container">
-                        <ul class="nav nav-tabs row d-flex" data-aos="fade-up" data-aos-delay="100">
-                            <li class="nav-item col-3">
-                                <a class="nav-link active show" data-bs-toggle="tab" data-bs-target="#features-tab-1">
-                                    <i class="bi bi-controller"></i>
-                                    <h4 class="d-none d-lg-block">Batalhas Estratégicas</h4>
-                                </a>
-                            </li>
-                            <li class="nav-item col-3">
-                                <a class="nav-link" data-bs-toggle="tab" data-bs-target="#features-tab-2">
-                                    <i class="bi bi-camera-video"></i>
-                                    <h4 class="d-none d-lg-block">Análises de Episódios</h4>
-                                </a>
-                            </li>
-                            <li class="nav-item col-3">
-                                <a class="nav-link" data-bs-toggle="tab" data-bs-target="#features-tab-3">
-                                    <i class="bi bi-people"></i>
-                                    <h4 class="d-none d-lg-block">Comunidade e Torneios</h4>
-                                </a>
-                            </li>
-                            <li class="nav-item col-3">
-                                <a class="nav-link" data-bs-toggle="tab" data-bs-target="#features-tab-4">
-                                    <i class="bi bi-lightning-charge"></i>
-                                    <h4 class="d-none d-lg-block">Dicas e Estratégias</h4>
-                                </a>
-                            </li>
-                        </ul>
+    <!-- Footer -->
+    <%- include('partials/footer') %>
 
-                        <div class="tab-content" data-aos="fade-up" data-aos-delay="200">
-                            <!-- Tab 1 - Batalhas Estratégicas -->
-                            <div class="tab-pane fade active show" id="features-tab-1">
-                                <div class="row">
-                                    <div class="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0">
-                                        <h3>Explore estratégias avançadas para batalhas Pokémon.</h3>
-                                        <p class="fst-italic">
-                                            Aprenda como usar movimentos, habilidades e tipos de Pokémon a seu favor
-                                            para vencer qualquer desafio.
-                                        </p>
-                                        <ul>
-                                            <li><i class="bi bi-check2-all"></i> <span>Dicas para aproveitar as
-                                                    fraquezas e resistências dos
-                                                    tipos.</span></li>
-                                            <li><i class="bi bi-check2-all"></i> <span>Análise de times e como compor
-                                                    equipes
-                                                    balanceadas.</span></li>
-                                            <li><i class="bi bi-check2-all"></i> <span>Estratégias para torneios e
-                                                    batalhas
-                                                    competitivas.</span></li>
-                                        </ul>
-                                    </div>
-                                    <div class="col-lg-6 order-1 order-lg-2 text-center">
-                                        <img src="/img/battle-strategy.png" alt="Batalhas Estratégicas"
-                                            class="img-fluid">
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Tab 2 - Análises de Episódios -->
-                            <div class="tab-pane fade" id="features-tab-2">
-                                <div class="row">
-                                    <div class="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0">
-                                        <h3>Comentários e análises dos últimos episódios de Pokémon.</h3>
-                                        <p>Fique por dentro dos melhores momentos e aprenda mais sobre o desenvolvimento
-                                            da série.</p>
-                                        <ul>
-                                            <li><i class="bi bi-check2-all"></i> <span>Análises dos personagens e suas
-                                                    jornadas.</span></li>
-                                            <li><i class="bi bi-check2-all"></i> <span>Destaques de batalhas e eventos
-                                                    importantes.</span></li>
-                                            <li><i class="bi bi-check2-all"></i> <span>Previsões para episódios
-                                                    futuros.</span></li>
-                                        </ul>
-                                    </div>
-                                    <div class="col-lg-6 order-1 order-lg-2 text-center">
-                                        <img src="/img/episode-analysis.png" alt="Análises de Episódios"
-                                            class="img-fluid">
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Tab 3 - Comunidade e Torneios -->
-                            <div class="tab-pane fade" id="features-tab-3">
-                                <div class="row">
-                                    <div class="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0">
-                                        <h3>Participe da nossa comunidade de treinadores e torneios.</h3>
-                                        <p>Conecte-se com outros fãs de Pokémon e entre em eventos exclusivos.</p>
-                                        <ul>
-                                            <li><i class="bi bi-check2-all"></i> <span>Discussões sobre as melhores
-                                                    estratégias.</span></li>
-                                            <li><i class="bi bi-check2-all"></i> <span>Torneios regulares para todos os
-                                                    níveis.</span></li>
-                                            <li><i class="bi bi-check2-all"></i> <span>Conecte-se com outros treinadores
-                                                    Pokémon.</span></li>
-                                        </ul>
-                                    </div>
-                                    <div class="col-lg-6 order-1 order-lg-2 text-center">
-                                        <img src="/img/community-tournaments.png" alt="Comunidade e Torneios"
-                                            class="img-fluid">
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Tab 4 - Dicas e Estratégias -->
-                            <div class="tab-pane fade" id="features-tab-4">
-                                <div class="row">
-                                    <div class="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0">
-                                        <h3>Dicas exclusivas para melhorar suas habilidades de treinador.</h3>
-                                        <p>Aprenda truques e estratégias que ajudam a se tornar um Mestre Pokémon.</p>
-                                        <ul>
-                                            <li><i class="bi bi-check2-all"></i> <span>Como capturar Pokémon raros e
-                                                    lendários.</span></li>
-                                            <li><i class="bi bi-check2-all"></i> <span>Dicas de treinamento para evoluir
-                                                    seu time.</span></li>
-                                            <li><i class="bi bi-check2-all"></i> <span>Estratégias para maximizar a
-                                                    eficiência em
-                                                    batalhas.</span></li>
-                                        </ul>
-                                    </div>
-                                    <div class="col-lg-6 order-1 order-lg-2 text-center">
-                                        <img src="/img/tips-strategies.png" alt="Dicas e Estratégias" class="img-fluid">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+    <!-- Scripts JS -->
+    <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/vendor/php-email-form/validate.js"></script>
+    <script src="/vendor/aos/aos.js"></script>
+    <script src="/vendor/glightbox/js/glightbox.min.js"></script>
+    <script src="/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
+    <script src="/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+    <script src="/vendor/swiper/swiper-bundle.min.js"></script>
 
-                    </div>
-                </section>
-                <!-- /Features Section -->
-
-                <!-- Services Section -->
-                <section id="services" class="services section">
-                    <div class="container section-title" data-aos="fade-up">
-                        <h2>Sorteios</h2>
-                        <p>Participe dos nossos sorteios e concorra a prêmios incríveis!</p>
-                    </div>
-
-                    <div class="container">
-                        <div class="row gy-4">
-                            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-                                <div class="service-item  position-relative">
-                                    <div class="icon">
-                                        <i class="bi bi-gift" style="color: #0dcaf0;"></i>
-                                    </div>
-                                    <a href="service-details.html" class="stretched-link">
-                                        <h3>Cartões Presente</h3>
-                                    </a>
-                                    <p>Concorra a cartões presente para jogos e lojas online, ideais para expandir sua
-                                        coleção Pokémon!</p>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-                                <div class="service-item position-relative">
-                                    <div class="icon">
-                                        <i class="bi bi-controller" style="color: #fd7e14;"></i>
-                                    </div>
-                                    <a href="service-details.html" class="stretched-link">
-                                        <h3>Jogos Pokémon</h3>
-                                    </a>
-                                    <p>Ganhe edições dos jogos Pokémon para diversas plataformas e vivencie aventuras
-                                        únicas.</p>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-                                <div class="service-item position-relative">
-                                    <div class="icon">
-                                        <i class="bi bi-star" style="color: #20c997;"></i>
-                                    </div>
-                                    <a href="service-details.html" class="stretched-link">
-                                        <h3>Figuras Colecionáveis</h3>
-                                    </a>
-                                    <p>Participe para ganhar figuras exclusivas dos seus Pokémon favoritos e ampliar sua
-                                        coleção.</p>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
-                                <div class="service-item position-relative">
-                                    <div class="icon">
-                                        <i class="bi bi-trophy" style="color: #df1529;"></i>
-                                    </div>
-                                    <a href="service-details.html" class="stretched-link">
-                                        <h3>Acessórios Exclusivos</h3>
-                                    </a>
-                                    <p>Concorra a acessórios temáticos de Pokémon, como bonés, camisetas e chaveiros.
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
-                                <div class="service-item position-relative">
-                                    <div class="icon">
-                                        <i class="bi bi-calendar-event" style="color: #6610f2;"></i>
-                                    </div>
-                                    <a href="service-details.html" class="stretched-link">
-                                        <h3>Participação em Eventos</h3>
-                                    </a>
-                                    <p>Tenha a chance de ganhar ingressos para eventos exclusivos de Pokémon em sua
-                                        região.</p>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
-                                <div class="service-item position-relative">
-                                    <div class="icon">
-                                        <i class="bi bi-dice-6" style="color: #f3268c;"></i>
-                                    </div>
-                                    <a href="service-details.html" class="stretched-link">
-                                        <h3>Itens Raros no Jogo</h3>
-                                    </a>
-                                    <p>Participe para ganhar itens raros dentro dos jogos Pokémon e impulsione sua
-                                        jornada!</p>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
-                </section>
-                <!-- /Services Section -->
-
-                <!-- Portfolio Section -->
-                <section id="portfolio" class="portfolio section">
-                    <div class="container section-title" data-aos="fade-up">
-                        <h2>Torneios e Competições</h2>
-                        <p>Confira nossos torneios e eventos</p>
-                    </div>
-
-                    <div class="container">
-                        <div class="isotope-layout" data-default-filter="*" data-layout="masonry"
-                            data-sort="original-order">
-                            <ul class="portfolio-filters isotope-filters" data-aos="fade-up" data-aos-delay="100">
-                                <li data-filter="*" class="filter-active">Todos</li>
-                                <li data-filter=".filter-local">Locais</li>
-                                <li data-filter=".filter-online">Online</li>
-                                <li data-filter=".filter-especial">Especiais</li>
-                            </ul>
-
-                            <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200">
-
-                                <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-local">
-                                    <img src="/img/masonry-portfolio/masonry-portfolio-1.jpg" class="img-fluid" alt="">
-                                    <div class="portfolio-info">
-                                        <h4>Torneio Local 1</h4>
-                                        <p>Compita com treinadores da sua região!</p>
-                                        <a href="/img/masonry-portfolio/masonry-portfolio-1.jpg" title="Torneio Local 1"
-                                            data-gallery="portfolio-gallery-local" class="glightbox preview-link"><i
-                                                class="bi bi-zoom-in"></i></a>
-                                        <a href="portfolio-details.html" title="Mais Detalhes" class="details-link"><i
-                                                class="bi bi-link-45deg"></i></a>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-online">
-                                    <img src="/img/masonry-portfolio/masonry-portfolio-2.jpg" class="img-fluid" alt="">
-                                    <div class="portfolio-info">
-                                        <h4>Competição Online 1</h4>
-                                        <p>Participe de batalhas online e teste suas habilidades!</p>
-                                        <a href="/img/masonry-portfolio/masonry-portfolio-2.jpg"
-                                            title="Competição Online 1" data-gallery="portfolio-gallery-online"
-                                            class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
-                                        <a href="portfolio-details.html" title="Mais Detalhes" class="details-link"><i
-                                                class="bi bi-link-45deg"></i></a>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-especial">
-                                    <img src="/img/masonry-portfolio/masonry-portfolio-3.jpg" class="img-fluid" alt="">
-                                    <div class="portfolio-info">
-                                        <h4>Evento Especial 1</h4>
-                                        <p>Um evento único com prêmios exclusivos!</p>
-                                        <a href="/img/masonry-portfolio/masonry-portfolio-3.jpg"
-                                            title="Evento Especial 1" data-gallery="portfolio-gallery-especial"
-                                            class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
-                                        <a href="portfolio-details.html" title="Mais Detalhes" class="details-link"><i
-                                                class="bi bi-link-45deg"></i></a>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-local">
-                                    <img src="/img/masonry-portfolio/masonry-portfolio-4.jpg" class="img-fluid" alt="">
-                                    <div class="portfolio-info">
-                                        <h4>Torneio Local 2</h4>
-                                        <p>Desafie outros treinadores na sua cidade!</p>
-                                        <a href="/img/masonry-portfolio/masonry-portfolio-4.jpg" title="Torneio Local 2"
-                                            data-gallery="portfolio-gallery-local" class="glightbox preview-link"><i
-                                                class="bi bi-zoom-in"></i></a>
-                                        <a href="portfolio-details.html" title="Mais Detalhes" class="details-link"><i
-                                                class="bi bi-link-45deg"></i></a>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-online">
-                                    <img src="/img/masonry-portfolio/masonry-portfolio-5.jpg" class="img-fluid" alt="">
-                                    <div class="portfolio-info">
-                                        <h4>Competição Online 2</h4>
-                                        <p>Enfrente treinadores de várias partes do mundo!</p>
-                                        <a href="/img/masonry-portfolio/masonry-portfolio-5.jpg"
-                                            title="Competição Online 2" data-gallery="portfolio-gallery-online"
-                                            class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
-                                        <a href="portfolio-details.html" title="Mais Detalhes" class="details-link"><i
-                                                class="bi bi-link-45deg"></i></a>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-especial">
-                                    <img src="/img/masonry-portfolio/masonry-portfolio-6.jpg" class="img-fluid" alt="">
-                                    <div class="portfolio-info">
-                                        <h4>Evento Especial 2</h4>
-                                        <p>Um campeonato exclusivo para verdadeiros Mestres Pokémon.</p>
-                                        <a href="/img/masonry-portfolio/masonry-portfolio-6.jpg"
-                                            title="Evento Especial 2" data-gallery="portfolio-gallery-especial"
-                                            class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
-                                        <a href="portfolio-details.html" title="Mais Detalhes" class="details-link"><i
-                                                class="bi bi-link-45deg"></i></a>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-local">
-                                    <img src="/img/masonry-portfolio/masonry-portfolio-7.jpg" class="img-fluid" alt="">
-                                    <div class="portfolio-info">
-                                        <h4>Torneio Local 3</h4>
-                                        <p>Participe e mostre suas habilidades na arena local!</p>
-                                        <a href="/img/masonry-portfolio/masonry-portfolio-7.jpg" title="Torneio Local 3"
-                                            data-gallery="portfolio-gallery-local" class="glightbox preview-link"><i
-                                                class="bi bi-zoom-in"></i></a>
-                                        <a href="portfolio-details.html" title="Mais Detalhes" class="details-link"><i
-                                                class="bi bi-link-45deg"></i></a>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-online">
-                                    <img src="/img/masonry-portfolio/masonry-portfolio-8.jpg" class="img-fluid" alt="">
-                                    <div class="portfolio-info">
-                                        <h4>Competição Online 3</h4>
-                                        <p>Teste suas estratégias contra treinadores de todo o país.</p>
-                                        <a href="/img/masonry-portfolio/masonry-portfolio-8.jpg"
-                                            title="Competição Online 3" data-gallery="portfolio-gallery-online"
-                                            class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
-                                        <a href="portfolio-details.html" title="Mais Detalhes" class="details-link"><i
-                                                class="bi bi-link-45deg"></i></a>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-especial">
-                                    <img src="/img/masonry-portfolio/masonry-portfolio-9.jpg" class="img-fluid" alt="">
-                                    <div class="portfolio-info">
-                                        <h4>Evento Especial 3</h4>
-                                        <p>O maior torneio do ano, com prêmios incríveis e muito mais!</p>
-                                        <a href="/img/masonry-portfolio/masonry-portfolio-9.jpg"
-                                            title="Evento Especial 3" data-gallery="portfolio-gallery-especial"
-                                            class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
-                                        <a href="portfolio-details.html" title="Mais Detalhes" class="details-link"><i
-                                                class="bi bi-link-45deg"></i></a>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                <!-- /Portfolio Section -->
-
-                <!-- Apoio Section -->
-                <!-- Pricing Section -->
-                <section id="pricing" class="pricing section">
-                    <div class="container section-title" data-aos="fade-up">
-                        <h2>Apoie o Coliseu</h2>
-                        <p>Escolha seu nível de apoio e ajude a fortalecer nossa comunidade Pokémon!</p>
-                    </div>
-
-                    <div class="container">
-                        <div class="row gy-3">
-                            <div class="col-xl-3 col-lg-6" data-aos="fade-up" data-aos-delay="100">
-                                <div class="pricing-item">
-                                    <h3>Gladiador Novato</h3>
-                                    <h4><sup>R$</sup>5<span> / mês</span></h4>
-                                    <ul>
-                                        <li>Acesso antecipado a vídeos</li>
-                                        <li>Nome nos créditos dos vídeos</li>
-                                        <li>Participação em sorteios exclusivos</li>
-                                        <li class="na">Acesso ao grupo de apoiadores</li>
-                                        <li class="na">Conteúdos exclusivos</li>
-                                    </ul>
-                                    <div class="btn-wrap">
-                                        <a href="#" class="btn-buy">Apoiar Agora</a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-xl-3 col-lg-6" data-aos="fade-up" data-aos-delay="200">
-                                <div class="pricing-item featured">
-                                    <h3>Gladiador Veterano</h3>
-                                    <h4><sup>R$</sup>15<span> / mês</span></h4>
-                                    <ul>
-                                        <li>Acesso antecipado a vídeos</li>
-                                        <li>Nome nos créditos dos vídeos</li>
-                                        <li>Participação em sorteios exclusivos</li>
-                                        <li>Acesso ao grupo de apoiadores</li>
-                                        <li class="na">Conteúdos exclusivos</li>
-                                    </ul>
-                                    <div class="btn-wrap">
-                                        <a href="#" class="btn-buy">Apoiar Agora</a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-xl-3 col-lg-6" data-aos="fade-up" data-aos-delay="400">
-                                <div class="pricing-item">
-                                    <h3>Gladiador de Elite</h3>
-                                    <h4><sup>R$</sup>30<span> / mês</span></h4>
-                                    <ul>
-                                        <li>Acesso antecipado a vídeos</li>
-                                        <li>Nome nos créditos dos vídeos</li>
-                                        <li>Participação em sorteios exclusivos</li>
-                                        <li>Acesso ao grupo de apoiadores</li>
-                                        <li>Conteúdos exclusivos</li>
-                                    </ul>
-                                    <div class="btn-wrap">
-                                        <a href="#" class="btn-buy">Apoiar Agora</a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-xl-3 col-lg-6" data-aos="fade-up" data-aos-delay="400">
-                                <div class="pricing-item">
-                                    <span class="advanced">Mestre</span>
-                                    <h3>Gladiador Supremo</h3>
-                                    <h4><sup>R$</sup>50<span> / mês</span></h4>
-                                    <ul>
-                                        <li>Acesso antecipado a vídeos</li>
-                                        <li>Nome nos créditos dos vídeos</li>
-                                        <li>Participação em sorteios exclusivos</li>
-                                        <li>Acesso ao grupo de apoiadores</li>
-                                        <li>Conteúdos exclusivos e personalizados</li>
-                                    </ul>
-                                    <div class="btn-wrap">
-                                        <a href="#" class="btn-buy">Apoiar Agora</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                <!-- /Pricing Section -->
-
-                <!-- Recent Posts Section -->
-                <section id="recent-posts" class="recent-posts section">
-                    <div class="container section-title" data-aos="fade-up">
-                        <h2>Últimas Notícias</h2>
-                        <p>Fique por dentro das novidades do mundo Pokémon</p>
-                    </div>
-
-                    <div class="container">
-                        <div class="row gy-4">
-                            <% if (lastPosts && lastPosts.length> 0) { %>
-                                <% lastPosts.forEach((post, index)=> { %>
-                                    <div class="col-xl-4 col-md-6" data-aos="fade-up"
-                                        data-aos-delay="<%= (index+1)*100 %>">
-                                        <article>
-                                            <div class="post-img">
-                                                <img src="<%= post.featured_image ? post.featured_image : '/img/blog/blog-1.jpg' %>"
-                                                    alt="<%= post.title %>" class="img-fluid">
-                                            </div>
-                                            <p class="post-category">
-                                                <%= post.tags ? post.tags : 'Notícia' %>
-                                            </p>
-                                            <h2 class="title">
-                                                <a href="/blog-details/<%= post.id %>">
-                                                    <%= post.title %>
-                                                </a>
-                                            </h2>
-                                            <div class="d-flex align-items-center">
-                                                <img src="<%= post.authorPic ? post.authorPic : '/img/blog/blog-author.jpg' %>"
-                                                    alt="Autor" class="img-fluid post-author-img flex-shrink-0"
-                                                    style="width:50px; height:50px; object-fit:cover; border-radius:50%;">
-                                                <div class="post-meta">
-                                                    <p class="post-author">
-                                                        <%= post.authorName %>
-                                                    </p>
-                                                    <p class="post-date">
-                                                        <time datetime="<%= post.created_at %>">
-                                                            <%= new Date(post.created_at).toLocaleDateString('pt-BR') %>
-                                                        </time>
-                                                    </p>
-                                                    <!-- Exibindo breve biography se quiser -->
-                                                    <% if (post.authorBio) { %>
-                                                        <p style="font-size: 14px; margin-top: 5px; color: #666;">
-                                                            <%= post.authorBio %>
-                                                        </p>
-                                                        <% } %>
-                                                </div>
-                                            </div>
-                                        </article>
-                                    </div>
-                                    <% }); %>
-                                        <% } else { %>
-                                            <p>Nenhuma notícia disponível no momento.</p>
-                                            <% } %>
-                        </div>
-                    </div>
-
-                </section>
-                <!-- /Recent Posts Section -->
-
-                <!-- Contact Section -->
-                <section id="contact" class="contact section">
-                    <div class="container section-title" data-aos="fade-up">
-                        <h2>Contato</h2>
-                        <p>Entre em contato com o Coliseu Pokémon</p>
-                    </div>
-
-                    <div class="container" data-aos="fade" data-aos-delay="100">
-                        <div class="row gy-4">
-                            <div class="col-lg-4">
-                                <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="200">
-                                    <i class="bi bi-geo-alt flex-shrink-0"></i>
-                                    <div>
-                                        <h3>Endereço</h3>
-                                        <p>Avenida Pallet, 151, Cidade de Pallet, Mundo Pokémon</p>
-                                    </div>
-                                </div>
-                                <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="300">
-                                    <i class="bi bi-telephone flex-shrink-0"></i>
-                                    <div>
-                                        <h3>Telefone</h3>
-                                        <p>+55 21 99999-9999</p>
-                                    </div>
-                                </div>
-                                <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="400">
-                                    <i class="bi bi-envelope flex-shrink-0"></i>
-                                    <div>
-                                        <h3>Email</h3>
-                                        <p>contato@coliseupokemon.com</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-8">
-                                <form action="forms/contact.php" method="post" class="php-email-form" data-aos="fade-up"
-                                    data-aos-delay="200">
-                                    <div class="row gy-4">
-                                        <div class="col-md-6">
-                                            <input type="text" name="name" class="form-control" placeholder="Seu Nome"
-                                                required>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <input type="email" class="form-control" name="email"
-                                                placeholder="Seu Email" required>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <input type="text" class="form-control" name="subject" placeholder="Assunto"
-                                                required>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <textarea class="form-control" name="message" rows="6"
-                                                placeholder="Mensagem" required></textarea>
-                                        </div>
-                                        <div class="col-md-12 text-center">
-                                            <div class="loading">Carregando</div>
-                                            <div class="error-message"></div>
-                                            <div class="sent-message">Sua mensagem foi enviada. Obrigado!</div>
-                                            <button type="submit">Enviar Mensagem</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                            <!-- End Contact Form -->
-                        </div>
-                    </div>
-                </section>
-                <!-- /Contact Section -->
-
-            </main>
-
-            <!-- Footer -->
-            <%- include('partials/footer') %>
-
-                <!-- Scripts JS -->
-                <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-                <script src="/vendor/php-email-form/validate.js"></script>
-                <script src="/vendor/aos/aos.js"></script>
-                <script src="/vendor/glightbox/js/glightbox.min.js"></script>
-                <script src="/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
-                <script src="/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-                <script src="/vendor/swiper/swiper-bundle.min.js"></script>
-
-                <!-- Main JS File -->
-                <script src="/js/main.js"></script>
-    </body>
-
+    <!-- Main JS File -->
+    <script src="/js/main.js"></script>
+  </body>
 </html>
